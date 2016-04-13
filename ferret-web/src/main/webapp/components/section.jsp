@@ -13,7 +13,7 @@
         </c:if>
     </h2>
 
-    <c:forEach items="${component.components}" var="component">
-        <page:component component="${component}"/>
+    <c:forEach items="${component.components}" var="child">
+        <page:component component="${child}"/>
     </c:forEach>
 </div>

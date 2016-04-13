@@ -9,6 +9,15 @@ public class Page extends Section {
     private String title;
     private List<Breadcrumb> breadcrumbs = new ArrayList<Breadcrumb>();
     private List<Component> components = new ArrayList<Component>();
+    private Navigation navigation;
+
+    public Navigation getNavigation() {
+        return navigation;
+    }
+
+    public void setNavigation(Navigation navigation) {
+        this.navigation = navigation;
+    }
 
     public String getTitle() {
         return title;

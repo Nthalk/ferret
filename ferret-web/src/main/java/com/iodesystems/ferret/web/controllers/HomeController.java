@@ -1,23 +1,28 @@
 package com.iodesystems.ferret.web.controllers;
 
 import com.iodesystems.ferret.data.Entity;
-import com.iodesystems.ferret.data.exceptions.InvalidKindException;
-import com.iodesystems.ferret.logic.data.FieldReference;
-import com.iodesystems.ferret.logic.operations.EqualsOperation;
-import com.iodesystems.ferret.logic.operations.NotOperation;
-import com.iodesystems.ferret.web.models.Page;
-import com.iodesystems.ferret.web.models.components.Section;
-import com.iodesystems.ferret.web.models.components.Text;
 import com.iodesystems.ferret.data.definition.EntityDefinition;
 import com.iodesystems.ferret.data.definition.FieldDefinition;
+import com.iodesystems.ferret.data.exceptions.InvalidKindException;
 import com.iodesystems.ferret.data.exceptions.InvalidStateException;
 import com.iodesystems.ferret.data.storage.KindStorage;
 import com.iodesystems.ferret.flow.Flow;
 import com.iodesystems.ferret.flow.State;
 import com.iodesystems.ferret.flow.Test;
 import com.iodesystems.ferret.logic.constants.StringConstant;
+import com.iodesystems.ferret.logic.data.FieldReference;
 import com.iodesystems.ferret.logic.data.VariableGet;
 import com.iodesystems.ferret.logic.exceptions.EvaluationException;
+import com.iodesystems.ferret.logic.operations.EqualsOperation;
+import com.iodesystems.ferret.logic.operations.NotOperation;
+import com.iodesystems.ferret.web.models.Navigation;
+import com.iodesystems.ferret.web.models.Page;
+import com.iodesystems.ferret.web.models.components.Section;
+import com.iodesystems.ferret.web.models.components.Table;
+import com.iodesystems.ferret.web.models.components.Text;
+import com.iodesystems.ferret.web.models.components.table.Cell;
+import com.iodesystems.ferret.web.models.components.table.ColumnHeader;
+import com.iodesystems.ferret.web.models.components.table.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,10 +37,21 @@ public class HomeController {
     @RequestMapping("/")
     public String home(@ModelAttribute Page page) {
         page.setTitle("Home");
+        page.setNavigation(new Navigation());
+        page.getNavigation().setTitle("Ferret");
         Section section = new Section();
+        page.getComponents().add(section);
+
+
         section.setTitle("News");
         section.getComponents().add(new Text("Welcome home!"));
-        page.getComponents().add(section);
+
+        Table table = new Table();
+        section.getComponents().add(table);
+        table.getColumnHeaders().add(new ColumnHeader(new Text("asdf")));
+        Row asdf = new Row("asdf");
+        table.getRows().add(asdf);
+        asdf.getCells().add(new Cell(new Text("Cell!")));
 
         EntityDefinition assets = new EntityDefinition();
         assets.setName("asset");

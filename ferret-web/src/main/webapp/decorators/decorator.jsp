@@ -8,7 +8,7 @@
     <script src="webjars/jquery/1.11.1/jquery.min.js"></script>
     <script src="webjars/vue/1.0.20/vue.min.js"></script>
     <script src="webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <link type="text/css" href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.6/css/bootstrap.css"/>
 
     <sitemesh:write property='head'/>
 </head>
