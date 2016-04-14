@@ -4,6 +4,14 @@ public class Breadcrumb {
     private String href;
     private String label;
 
+    public Breadcrumb(String href, String label) {
+        this.href = href;
+        this.label = label;
+    }
+
+    public Breadcrumb() {
+    }
+
     public void setHref(String href) {
         this.href = href;
     }

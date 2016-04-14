@@ -8,6 +8,9 @@ public class Row {
     private String id;
     private List<Cell> cells = new ArrayList<Cell>();
 
+    public Row() {
+    }
+
     public Row(String id) {
         this.id = id;
     }
