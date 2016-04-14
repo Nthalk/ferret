@@ -3,10 +3,12 @@ package com.iodesystems.ferret.web.controllers;
 import com.iodesystems.ferret.conf.Configuration;
 import com.iodesystems.ferret.data.definition.EntityDefinition;
 import com.iodesystems.ferret.data.definition.FieldDefinition;
+import com.iodesystems.ferret.data.search.EntitySearchService;
 import com.iodesystems.ferret.web.controllers.models.EntityCreateModel;
 import com.iodesystems.ferret.web.controllers.models.EntityIndexModel;
-import com.iodesystems.ferret.web.models.Breadcrumb;
-import com.iodesystems.ferret.web.models.Paragraph;
+import com.iodesystems.ferret.web.controllers.models.EntitySearchModel;
+import com.iodesystems.ferret.web.models.*;
+import com.iodesystems.ferret.web.models.components.EntitySearchTable;
 import com.iodesystems.ferret.web.models.components.Section;
 import com.iodesystems.ferret.web.models.components.Table;
 import com.iodesystems.ferret.web.models.components.Text;
@@ -31,6 +33,9 @@ public class EntitiesController {
     @Autowired
     ServletContext servletContext;
 
+    @Autowired
+    EntitySearchService entitySearchService;
+
     @RequestMapping("/{name}/create")
     public String create(@PathVariable String name,
                          @ModelAttribute EntityCreateModel entityCreateModel) {
@@ -40,6 +45,30 @@ public class EntitiesController {
             return "create";
         }
         return "create";
+    }
+
+    @RequestMapping("/{name}/search")
+    public String create(@PathVariable String name,
+                         @ModelAttribute EntitySearchModel entitySearchModel) {
+        EntityDefinition entityDefinition = getEntityByName(name);
+        if (entityDefinition == null) {
+            entitySearchModel.getErrrors().reject("No entity found");
+            return "entities/search_entities";
+        }
+        entitySearchModel.setTitle(entityDefinition.getTitle());
+        entitySearchModel.setSidebar(getEntitySidebar(entityDefinition));
+        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/", "Entities"));
+        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, entityDefinition.getTitle()));
+        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name + "/search", "Search"));
+
+        EntitySearchTable entitySearchTable = new EntitySearchTable(entityDefinition);
+        entitySearchTable.setQuery(entitySearchModel.getQuery());
+        entitySearchModel.getComponents().add(entitySearchTable);
+
+        entitySearchTable.setSearchResult(entitySearchService.search(entityDefinition,
+                                                                     entitySearchModel.getQuery(),
+                                                                     entitySearchModel.getLimit(), entitySearchModel.getOffset()));
+        return "entities/search_entities";
     }
 
     @RequestMapping("/{name}")
@@ -53,7 +82,9 @@ public class EntitiesController {
 
         entityIndexModel.setTitle(entityDefinition.getTitle());
         entityIndexModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/", "Entities"));
-        entityIndexModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, name));
+        entityIndexModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, entityDefinition.getTitle()));
+
+        entityIndexModel.setSidebar(getEntitySidebar(entityDefinition));
 
         String description = entityDefinition.getDescription();
         if (description != null) {
@@ -78,6 +109,18 @@ public class EntitiesController {
 
         entityIndexModel.getComponents().add(fields);
         return "entities";
+    }
+
+    private Sidebar getEntitySidebar(EntityDefinition entityDefinition) {
+        String name = entityDefinition.getName();
+        Sidebar sidebar = new Sidebar();
+        MenuGroup menuGroup = new MenuGroup(entityDefinition.getTitle());
+        menuGroup.getMenuItems().add(new MenuItem(servletContext.getContextPath() + "/entities/" + name + "/", "About"));
+        menuGroup.getMenuItems().add(new MenuItem(servletContext.getContextPath() + "/entities/" + name + "/search", "Search"));
+        menuGroup.getMenuItems().add(new MenuItem(servletContext.getContextPath() + "/entities/" + name + "/create", "Create"));
+
+        sidebar.getMenuGroups().add(menuGroup);
+        return sidebar;
     }
 
     public EntityDefinition getEntityByName(String name) {

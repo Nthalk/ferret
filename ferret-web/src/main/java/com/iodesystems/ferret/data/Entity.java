@@ -1,9 +1,10 @@
 package com.iodesystems.ferret.data;
 
-import com.iodesystems.fn.Option;
 import com.iodesystems.ferret.data.definition.EntityDefinition;
+import com.iodesystems.fn.Option;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Entity implements Kind {
@@ -18,8 +19,10 @@ public class Entity implements Kind {
 
 
     @Override
-    public Collection<Field> getFields() {
-        return fields.values();
+    public List<Field> getFields() {
+        List<Field> fields = new ArrayList<Field>();
+        fields.addAll(this.fields.values());
+        return fields;
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.iodesystems.ferret.data.definition.FieldDefinition;
 
 public class Field {
     private final FieldDefinition fieldDefinition;
-    private String value;
+    private Object value;
 
     public Field(FieldDefinition fieldDefinition) {
         this.fieldDefinition = fieldDefinition;
@@ -14,7 +14,7 @@ public class Field {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 }
