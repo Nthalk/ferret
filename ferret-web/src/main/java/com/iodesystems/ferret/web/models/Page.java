@@ -4,17 +4,18 @@ import com.iodesystems.ferret.web.models.components.Section;
 import org.springframework.validation.DirectFieldBindingResult;
 import org.springframework.validation.Errors;
 
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlType(name = "Page", namespace = "http://iodesystems.com")
 public class Page extends Section {
+    private final Errors errrors = new DirectFieldBindingResult(this, "entityIndexModel");
     private String title;
     private List<Breadcrumb> breadcrumbs = new ArrayList<Breadcrumb>();
     private List<Component> components = new ArrayList<Component>();
     private Navigation navigation;
     private Sidebar sidebar;
-
-    private final Errors errrors = new DirectFieldBindingResult(this, "entityIndexModel");
 
     public Errors getErrrors() {
         return errrors;
@@ -52,11 +53,11 @@ public class Page extends Section {
         this.components = components;
     }
 
-    public void setSidebar(Sidebar sidebar) {
-        this.sidebar = sidebar;
-    }
-
     public Sidebar getSidebar() {
         return sidebar;
+    }
+
+    public void setSidebar(Sidebar sidebar) {
+        this.sidebar = sidebar;
     }
 }

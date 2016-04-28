@@ -1,11 +1,16 @@
 package com.iodesystems.ferret.web.models;
 
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlType()
 public class MenuGroup {
-    private final String title;
+    private String title;
     private List<MenuItem> menuItems = new ArrayList<MenuItem>();
+
+    public MenuGroup() {
+    }
 
     public MenuGroup(String title) {
         this.title = title;

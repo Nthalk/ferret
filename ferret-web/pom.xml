@@ -15,6 +15,31 @@
         <spring.version>4.2.5.RELEASE</spring.version>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+
+                    </execution>
+                </executions>
+                <configuration>
+                    <sources>
+                        <source>${project.build.sourceDirectory}/com/iodesystems/ferret/web/models/Page.java</source>
+                    </sources>
+                    <outputDirectory>${project.build.directory}/schemas</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <!-- Servlet -->
         <dependency>
@@ -27,6 +52,13 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>
+
+        <!-- Jaxb -->
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.11</version>
         </dependency>
 
         <!-- Sitemesh -->
