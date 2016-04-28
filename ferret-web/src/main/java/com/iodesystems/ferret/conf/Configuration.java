@@ -21,6 +21,7 @@ public class Configuration {
         FieldTypeDefinition integer = new FieldTypeDefinition();
         integer.setName("integer");
         fieldTypeDefinitions.add(integer);
+
         return fieldTypeDefinitions;
     }
 

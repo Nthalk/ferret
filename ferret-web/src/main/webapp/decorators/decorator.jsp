@@ -10,8 +10,6 @@
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/css/bootstrap.css"/>
 
-
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css"/>
     <sitemesh:write property='head'/>
 </head>
 <body>

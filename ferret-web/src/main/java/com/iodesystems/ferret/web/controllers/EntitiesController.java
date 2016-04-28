@@ -8,10 +8,7 @@ import com.iodesystems.ferret.web.controllers.models.EntityCreateModel;
 import com.iodesystems.ferret.web.controllers.models.EntityIndexModel;
 import com.iodesystems.ferret.web.controllers.models.EntitySearchModel;
 import com.iodesystems.ferret.web.models.*;
-import com.iodesystems.ferret.web.models.components.EntitySearchTable;
-import com.iodesystems.ferret.web.models.components.Section;
-import com.iodesystems.ferret.web.models.components.Table;
-import com.iodesystems.ferret.web.models.components.Text;
+import com.iodesystems.ferret.web.models.components.*;
 import com.iodesystems.ferret.web.models.components.table.Cell;
 import com.iodesystems.ferret.web.models.components.table.ColumnHeader;
 import com.iodesystems.ferret.web.models.components.table.Row;
@@ -20,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.ServletContext;
 
@@ -36,24 +35,52 @@ public class EntitiesController {
     @Autowired
     EntitySearchService entitySearchService;
 
-    @RequestMapping("/{name}/create")
+    @RequestMapping(value = "/{name}/create", method = RequestMethod.POST)
     public String create(@PathVariable String name,
+                         WebRequest webRequest,
                          @ModelAttribute EntityCreateModel entityCreateModel) {
         EntityDefinition entityDefinition = getEntityByName(name);
         if (entityDefinition == null) {
             entityCreateModel.getErrrors().reject("No entity found");
-            return "create";
+            return "entities";
         }
-        return "create";
+        return "entities/create_entity";
+    }
+
+    @RequestMapping(value = "/{name}/create", method = RequestMethod.GET)
+    public String build(@PathVariable String name,
+                        @ModelAttribute EntityCreateModel entityCreateModel) {
+        EntityDefinition entityDefinition = getEntityByName(name);
+        if (entityDefinition == null) {
+            entityCreateModel.getErrrors().reject("No entity found");
+            return "entities";
+        }
+
+        entityCreateModel.setTitle(entityDefinition.getTitle());
+        entityCreateModel.setSidebar(getEntitySidebar(entityDefinition));
+        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/", "Entities"));
+        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, entityDefinition.getTitle()));
+        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name + "/create", "Create"));
+
+        Form form = new Form();
+        for (FieldDefinition fieldDefinition : entityDefinition.getFieldDefinitions()) {
+            Input input = new Input();
+            input.setLabel(fieldDefinition.getName());
+            form.getComponents().add(input);
+        }
+
+        entityCreateModel.getComponents().add(form);
+
+        return "entities/create_entity";
     }
 
     @RequestMapping("/{name}/search")
-    public String create(@PathVariable String name,
-                         @ModelAttribute EntitySearchModel entitySearchModel) {
+    public String build(@PathVariable String name,
+                        @ModelAttribute EntitySearchModel entitySearchModel) {
         EntityDefinition entityDefinition = getEntityByName(name);
         if (entityDefinition == null) {
             entitySearchModel.getErrrors().reject("No entity found");
-            return "entities/search_entities";
+            return "entities";
         }
         entitySearchModel.setTitle(entityDefinition.getTitle());
         entitySearchModel.setSidebar(getEntitySidebar(entityDefinition));
@@ -68,6 +95,8 @@ public class EntitiesController {
         entitySearchTable.setSearchResult(entitySearchService.search(entityDefinition,
                                                                      entitySearchModel.getQuery(),
                                                                      entitySearchModel.getLimit(), entitySearchModel.getOffset()));
+
+
         return "entities/search_entities";
     }
 
