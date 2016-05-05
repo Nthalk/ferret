@@ -9,7 +9,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>ferret-web</module>
+        <module>web</module>
+        <module>server</module>
     </modules>
 
     <properties>

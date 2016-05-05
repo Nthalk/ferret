@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export VAGRANT_CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/server"
+vagrant "$@"
+
