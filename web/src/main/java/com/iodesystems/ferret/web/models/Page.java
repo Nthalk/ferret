@@ -10,15 +10,14 @@ import java.util.List;
 
 @XmlType(name = "Page", namespace = "http://iodesystems.com")
 public class Page extends Section {
-    private final Errors errrors = new DirectFieldBindingResult(this, "entityIndexModel");
+    private final Errors errors = new DirectFieldBindingResult(this, "entityIndexModel");
     private String title;
     private List<Breadcrumb> breadcrumbs = new ArrayList<Breadcrumb>();
-    private List<Component> components = new ArrayList<Component>();
     private Navigation navigation;
-    private Sidebar sidebar;
+    private Sidebar sidebar = new Sidebar();
 
-    public Errors getErrrors() {
-        return errrors;
+    public Errors getErrors() {
+        return errors;
     }
 
     public Navigation getNavigation() {
@@ -43,14 +42,6 @@ public class Page extends Section {
 
     public void setBreadcrumbs(List<Breadcrumb> breadcrumbs) {
         this.breadcrumbs = breadcrumbs;
-    }
-
-    public List<Component> getComponents() {
-        return components;
-    }
-
-    public void setComponents(List<Component> components) {
-        this.components = components;
     }
 
     public Sidebar getSidebar() {

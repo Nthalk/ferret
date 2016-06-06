@@ -4,7 +4,7 @@ import com.iodesystems.ferret.data.definition.EntityDefinition;
 import com.iodesystems.ferret.data.search.SearchResult;
 import com.iodesystems.ferret.web.models.Component;
 
-public class EntitySearchTable extends Component {
+public class EntitySearchTable implements Component {
     private final EntityDefinition entityDefinition;
     private String query;
     private SearchResult searchResult;

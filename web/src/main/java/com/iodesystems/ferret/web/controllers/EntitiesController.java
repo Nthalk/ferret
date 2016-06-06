@@ -4,23 +4,21 @@ import com.iodesystems.ferret.conf.Configuration;
 import com.iodesystems.ferret.data.definition.EntityDefinition;
 import com.iodesystems.ferret.data.definition.FieldDefinition;
 import com.iodesystems.ferret.data.search.EntitySearchService;
-import com.iodesystems.ferret.web.controllers.models.EntityCreateModel;
-import com.iodesystems.ferret.web.controllers.models.EntityIndexModel;
-import com.iodesystems.ferret.web.controllers.models.EntitySearchModel;
+import com.iodesystems.ferret.web.controllers.models.*;
 import com.iodesystems.ferret.web.models.*;
 import com.iodesystems.ferret.web.models.components.*;
+import com.iodesystems.ferret.web.models.components.form.Input;
+import com.iodesystems.ferret.web.models.components.grid.GridRow;
 import com.iodesystems.ferret.web.models.components.table.Cell;
 import com.iodesystems.ferret.web.models.components.table.ColumnHeader;
 import com.iodesystems.ferret.web.models.components.table.Row;
+import com.iodesystems.ferret.web.providers.UrlFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.ServletContext;
 
 @Controller
 @RequestMapping("/entities")
@@ -30,18 +28,68 @@ public class EntitiesController {
     Configuration configuration;
 
     @Autowired
-    ServletContext servletContext;
+    Navigation navigation;
+
+    @Autowired
+    UrlFactory urlFactory;
 
     @Autowired
     EntitySearchService entitySearchService;
 
+
+    @RequestMapping(value = "create", method = RequestMethod.GET)
+    public String build(@ModelAttribute EntitiesCreateModel entitiesCreateModel) {
+        entitiesCreateModel.setNavigation(navigation);
+        entitiesCreateModel.setTitle("Create Entity");
+
+        GridRow container = entitiesCreateModel.add(new GridRow());
+        Form form = container.column(6, 3).add(new Form());
+        Input name = form.add(new Input());
+        name.setName("name");
+        name.setLabel("Name");
+        name.setValue(entitiesCreateModel.getName());
+
+        return "entities/create";
+    }
+
+    @RequestMapping(value = "create", method = RequestMethod.POST)
+    public String create(@ModelAttribute EntitiesCreateModel entitiesCreateModel) {
+        return build(entitiesCreateModel);
+    }
+
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String index(@ModelAttribute EntitiesIndexModel entitiesIndexModel) {
+        entitiesIndexModel.setNavigation(navigation);
+        entitiesIndexModel.setEntityDefinitions(configuration.getEntityDefinitions());
+        entitiesIndexModel.setTitle("Entities");
+        entitiesIndexModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities"), "Entities"));
+
+        MenuGroup manageEntitiesMenu = new MenuGroup("Manage");
+        entitiesIndexModel.getSidebar().addMenuGroup(manageEntitiesMenu);
+        manageEntitiesMenu.addMenuItem(new MenuItem(
+            urlFactory.create("/entities/" + "create"),
+            "Create Entity"
+        ));
+
+        MenuGroup existingEntitiesMenu = new MenuGroup("Entities");
+        entitiesIndexModel.getSidebar().getMenuGroups().add(existingEntitiesMenu);
+        for (EntityDefinition entityDefinition : configuration.getEntityDefinitions()) {
+            existingEntitiesMenu.getMenuItems().add(new MenuItem(
+                urlFactory.create("/entities/" + entityDefinition.getName()),
+                entityDefinition.getTitle()));
+        }
+
+        return "entities/index";
+    }
+
     @RequestMapping(value = "/{name}/create", method = RequestMethod.POST)
     public String create(@PathVariable String name,
-                         WebRequest webRequest,
                          @ModelAttribute EntityCreateModel entityCreateModel) {
+        entityCreateModel.setNavigation(navigation);
         EntityDefinition entityDefinition = getEntityByName(name);
         if (entityDefinition == null) {
-            entityCreateModel.getErrrors().reject("No entity found");
+            entityCreateModel.getErrors().reject("No entity found");
             return "entities";
         }
         return "entities/create_entity";
@@ -50,17 +98,18 @@ public class EntitiesController {
     @RequestMapping(value = "/{name}/create", method = RequestMethod.GET)
     public String build(@PathVariable String name,
                         @ModelAttribute EntityCreateModel entityCreateModel) {
+        entityCreateModel.setNavigation(navigation);
         EntityDefinition entityDefinition = getEntityByName(name);
         if (entityDefinition == null) {
-            entityCreateModel.getErrrors().reject("No entity found");
+            entityCreateModel.getErrors().reject("No entity found");
             return "entities";
         }
 
         entityCreateModel.setTitle(entityDefinition.getTitle());
         entityCreateModel.setSidebar(getEntitySidebar(entityDefinition));
-        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/", "Entities"));
-        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, entityDefinition.getTitle()));
-        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name + "/create", "Create"));
+        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities"), "Entities"));
+        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities/" + name), entityDefinition.getTitle()));
+        entityCreateModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities/" + name + "/create"), "Create"));
 
         Form form = new Form();
         for (FieldDefinition fieldDefinition : entityDefinition.getFieldDefinitions()) {
@@ -77,16 +126,19 @@ public class EntitiesController {
     @RequestMapping("/{name}/search")
     public String build(@PathVariable String name,
                         @ModelAttribute EntitySearchModel entitySearchModel) {
+
+        entitySearchModel.setNavigation(navigation);
+
         EntityDefinition entityDefinition = getEntityByName(name);
         if (entityDefinition == null) {
-            entitySearchModel.getErrrors().reject("No entity found");
+            entitySearchModel.getErrors().reject("No entity found");
             return "entities";
         }
         entitySearchModel.setTitle(entityDefinition.getTitle());
         entitySearchModel.setSidebar(getEntitySidebar(entityDefinition));
-        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/", "Entities"));
-        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, entityDefinition.getTitle()));
-        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name + "/search", "Search"));
+        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities"), "Entities"));
+        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities/" + name), entityDefinition.getTitle()));
+        entitySearchModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities/" + name + "/search"), "Search"));
 
         EntitySearchTable entitySearchTable = new EntitySearchTable(entityDefinition);
         entitySearchTable.setQuery(entitySearchModel.getQuery());
@@ -103,15 +155,19 @@ public class EntitiesController {
     @RequestMapping("/{name}")
     public String index(@PathVariable String name,
                         @ModelAttribute EntityIndexModel entityIndexModel) {
+        entityIndexModel.setNavigation(navigation);
+
         EntityDefinition entityDefinition = getEntityByName(name);
         if (entityDefinition == null) {
-            entityIndexModel.getErrrors().reject("No entity found");
+            entityIndexModel.getErrors().reject("entity.not_found",
+                                                new Object[]{name},
+                                                "Entity not found: {0}");
             return "entities";
         }
 
         entityIndexModel.setTitle(entityDefinition.getTitle());
-        entityIndexModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/", "Entities"));
-        entityIndexModel.getBreadcrumbs().add(new Breadcrumb(servletContext.getContextPath() + "/entities/" + name, entityDefinition.getTitle()));
+        entityIndexModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities"), "Entities"));
+        entityIndexModel.getBreadcrumbs().add(new Breadcrumb(urlFactory.create("/entities/" + name), entityDefinition.getTitle()));
 
         entityIndexModel.setSidebar(getEntitySidebar(entityDefinition));
 
@@ -144,9 +200,9 @@ public class EntitiesController {
         String name = entityDefinition.getName();
         Sidebar sidebar = new Sidebar();
         MenuGroup menuGroup = new MenuGroup(entityDefinition.getTitle());
-        menuGroup.getMenuItems().add(new MenuItem(servletContext.getContextPath() + "/entities/" + name + "/", "About"));
-        menuGroup.getMenuItems().add(new MenuItem(servletContext.getContextPath() + "/entities/" + name + "/search", "Search"));
-        menuGroup.getMenuItems().add(new MenuItem(servletContext.getContextPath() + "/entities/" + name + "/create", "Create"));
+        menuGroup.getMenuItems().add(new MenuItem(urlFactory.create("/entities/" + name + "/"), "About"));
+        menuGroup.getMenuItems().add(new MenuItem(urlFactory.create("/entities/" + name + "/search"), "Search"));
+        menuGroup.getMenuItems().add(new MenuItem(urlFactory.create("/entities/" + name + "/create"), "Create"));
 
         sidebar.getMenuGroups().add(menuGroup);
         return sidebar;

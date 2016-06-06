@@ -24,11 +24,14 @@ public class HomeController {
     @Autowired
     ServletContext servletContext;
 
+    @Autowired
+    Navigation navigation;
+
     @RequestMapping("/")
     public String home(@ModelAttribute Page page) {
         page.setTitle("Home");
-        page.setNavigation(new Navigation());
-        page.getNavigation().setTitle("Ferret");
+        page.setNavigation(navigation);
+
         Section section = new Section();
         page.getComponents().add(section);
 

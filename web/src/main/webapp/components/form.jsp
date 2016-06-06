@@ -10,4 +10,8 @@
     <c:forEach items="${component.components}" var="child">
         <page:component component="${child}"/>
     </c:forEach>
+    <hr/>
+    <div class="text-right">
+        <button class="btn btn-default">Submit</button>
+    </div>
 </form:form>

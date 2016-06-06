@@ -1,15 +1,11 @@
 package com.iodesystems.ferret.web.models.components;
 
-import com.iodesystems.ferret.web.models.Component;
+import com.iodesystems.ferret.web.models.NestedComponent;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Section extends Component {
+public class Section extends NestedComponent {
 
     private String title;
     private String subTitle;
-    private List<Component> components = new ArrayList<Component>();
 
     public String getSubTitle() {
         return subTitle;
@@ -30,13 +26,5 @@ public class Section extends Component {
     @Override
     public String getType() {
         return "section";
-    }
-
-    public List<Component> getComponents() {
-        return components;
-    }
-
-    public void setComponents(List<Component> components) {
-        this.components = components;
     }
 }

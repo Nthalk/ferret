@@ -9,6 +9,7 @@
     <script src="${pageContext.request.contextPath}/webjars/vue/1.0.20/vue.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/css/bootstrap.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css"/>
 
     <sitemesh:write property='head'/>
 </head>

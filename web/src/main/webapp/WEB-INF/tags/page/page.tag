@@ -1,15 +1,47 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tags-page" tagdir="/WEB-INF/tags/page" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ attribute name="page" type="com.iodesystems.ferret.web.models.Page" %>
 
 
 <title>${page.title}</title>
 
-<c:if test="${not empty page.sidebar}">
+<div class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}">
+                ${page.navigation.title}
+            </a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <c:forEach items="${page.navigation.dropDowns}" var="dropDown">
+                <li class="dropdown">
+                    <a href="#"
+                       class="dropdown-toggle"
+                       data-toggle="dropdown"
+                       role="button"
+                       aria-haspopup="true"
+                       aria-expanded="false">
+                            ${dropDown.title} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <c:forEach var="link" items="${dropDown.links}">
+                            <li><tags-page:component component="${link}"/></li>
+                        </c:forEach>
+                    </ul>
+                </li>
+            </c:forEach>
+        </ul>
+    </div>
+</div>
+
+
+<c:if test="${not empty page.sidebar and not empty page.sidebar.menuGroups}">
     <style>
         .sidebar {
             position: fixed;
-            top: 0;
+            top: 52px;
             left: 0;
             bottom: 0;
             background: #2e3032;
@@ -48,9 +80,20 @@
     </div>
 </c:if>
 
-<div class="container-fluid ${not empty page.sidebar ? 'sidebar-content' : ''}">
+<div class="container-fluid ${not empty page.sidebar and not empty page.sidebar.menuGroups ? 'sidebar-content' : ''}">
+
     <c:if test="${not empty page.title}">
         <h1>${page.title}</h1>
+    </c:if>
+
+    <c:if test="${not empty page.errors.globalErrors}">
+        <div class="alert alert-danger">
+            <c:forEach var="error" items="${page.errors.globalErrors}">
+                <spring:message code="${error.code}"
+                                arguments="${error.arguments}"
+                                text="${error.defaultMessage}"/>
+            </c:forEach>
+        </div>
     </c:if>
 
     <c:if test="${not empty page.breadcrumbs}">

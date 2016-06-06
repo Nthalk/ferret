@@ -7,7 +7,7 @@ import com.iodesystems.ferret.web.models.components.table.Row;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Table extends Component {
+public class Table implements Component {
     private List<ColumnHeader> columnHeaders = new ArrayList<ColumnHeader>();
     private List<Row> rows = new ArrayList<Row>();
 

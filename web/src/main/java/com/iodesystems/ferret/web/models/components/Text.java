@@ -2,7 +2,7 @@ package com.iodesystems.ferret.web.models.components;
 
 import com.iodesystems.ferret.web.models.Component;
 
-public class Text extends Component {
+public class Text implements Component {
     private String text;
 
     public Text(String text) {

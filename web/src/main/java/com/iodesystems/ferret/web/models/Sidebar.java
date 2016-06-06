@@ -13,4 +13,8 @@ public class Sidebar {
     public void setMenuGroups(List<MenuGroup> menuGroups) {
         this.menuGroups = menuGroups;
     }
+
+    public void addMenuGroup(MenuGroup menuGroup) {
+        menuGroups.add(menuGroup);
+    }
 }

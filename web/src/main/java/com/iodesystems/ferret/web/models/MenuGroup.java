@@ -20,11 +20,19 @@ public class MenuGroup {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public List<MenuItem> getMenuItems() {
         return menuItems;
     }
 
     public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
+    }
+
+    public void addMenuItem(MenuItem menuItem) {
+        getMenuItems().add(menuItem);
     }
 }
