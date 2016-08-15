@@ -12,10 +12,22 @@
     <packaging>war</packaging>
 
     <properties>
-        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.version>4.3.2.RELEASE</spring.version>
+        <spring.security.version>4.1.2.RELEASE</spring.security.version>
+        <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+        <jdbc.url>jdbc:postgresql://127.0.0.1:5432/ferret</jdbc.url>
+        <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+        <jdbc.user>ferret</jdbc.user>
+        <jdbc.password>ferret</jdbc.password>
     </properties>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <!-- Integrate generetated sources -->
             <plugin>
@@ -36,6 +48,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Run database migrations -->
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -53,19 +67,21 @@
                     <dependency>
                         <groupId>postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <version>9.1-901.jdbc3</version>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <!-- Generate Java objects from database-->
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.4</version>
                 <configuration>
                     <jdbc>
-                        <user>ferret</user>
-                        <password>ferret</password>
-                        <url>jdbc:postgresql://127.0.0.1:5432/ferret</url>
+                        <user>${jdbc.user}</user>
+                        <password>${jdbc.password}</password>
+                        <url>${jdbc.url}</url>
                         <driver>org.postgresql.Driver</driver>
                     </jdbc>
                     <generator>
@@ -81,32 +97,6 @@
                         </target>
                     </generator>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>schemagen</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <sources>
-                        <source>${project.build.sourceDirectory}/com/iodesystems/ferret/web/models/Page.java</source>
-                    </sources>
-                    <outputDirectory>${project.build.directory}/schemas</outputDirectory>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>9.1-901.jdbc3</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -147,13 +137,8 @@
         <!-- Web Resources -->
         <dependency>
             <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
             <artifactId>vue</artifactId>
-            <version>1.0.20</version>
+            <version>1.0.24</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
@@ -187,45 +172,55 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>4.0.3.RELEASE</version>
+            <version>${spring.security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>4.0.3.RELEASE</version>
+            <version>${spring.security.version}</version>
         </dependency>
 
         <!-- Database -->
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.8.0</version>
+            <version>3.8.4</version>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc3</version>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP-java6</artifactId>
+            <version>2.3.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <!-- Json -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.6.3</version>
+            <version>2.8.1</version>
         </dependency>
 
         <!-- Util -->
         <dependency>
             <groupId>com.iodesystems</groupId>
             <artifactId>fn</artifactId>
-            <version>1.0.14</version>
+            <version>1.1.6</version>
         </dependency>
 
         <!-- Pluralization -->
         <dependency>
             <groupId>org.atteo</groupId>
             <artifactId>evo-inflector</artifactId>
-            <version>1.2</version>
+            <version>1.2.1</version>
         </dependency>
 
     </dependencies>

@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-mvn -pl web flyway:clean
+mvn -pl web flyway:clean flyway:migrate jooq-codegen:generate
+
+echo PGPASSWORD=ferret psql -d ferret -U ferret -h localhost -p 5432 -a -f /ferret/seeds/seed.sql -v DIR=/ferret/seeds/ | ./vm ssh

@@ -37,8 +37,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -54,22 +54,6 @@
                 <configuration>
                     <attach>true</attach>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.iodesystems</groupId>
-                <artifactId>whatjdk-maven-plugin</artifactId>
-                <version>1.0.4-SNAPSHOT</version>
-                <configuration>
-                    <allowedJdkVersions>Java1.2,Java1.3,Java1.5,Java1.6</allowedJdkVersions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

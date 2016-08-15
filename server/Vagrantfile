@@ -4,6 +4,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "ferret" do |t|
   end
 
+  config.vm.synced_folder "../home", "/ferret"
+
   config.vm.box = "hashicorp/precise64"
   config.vm.hostname = "vagrant"
 
@@ -17,5 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifest_file  = "site.pp"
     puppet.options << '--fileserverconfig /vagrant/filesserver.conf'
   end
+
+  config.vm.provision "shell", inline: "touch ~/.hushlogin"
 
 end

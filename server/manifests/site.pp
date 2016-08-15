@@ -1,3 +1,5 @@
+# Motd
+
 # Postgres
 class { 'postgresql::server':
   ip_mask_allow_all_users    => '0.0.0.0/0',
@@ -22,6 +24,7 @@ package { "nginx":
 service { "nginx":
   ensure => "running",
 }
+
 
 file { "/etc/nginx/nginx.conf":
   notify  => Service["nginx"],
