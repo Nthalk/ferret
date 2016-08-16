@@ -3,7 +3,7 @@ package com.iodesystems.ferret.web.controllers.models;
 import com.iodesystems.ferret.models.DataSource;
 import com.iodesystems.ferret.models.Schema;
 
-public class DataSourceAddSchema {
+public class SchemaCreate {
     private DataSource dataSource;
     private Schema schema;
 

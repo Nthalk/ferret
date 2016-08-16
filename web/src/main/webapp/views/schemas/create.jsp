@@ -3,17 +3,17 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<jsp:useBean id="dataSourceAddSchema" scope="request" type="com.iodesystems.ferret.web.controllers.models.DataSourceAddSchema"/>
+<jsp:useBean id="schemaCreate" scope="request" type="com.iodesystems.ferret.web.controllers.models.SchemaCreate"/>
 
 <html>
 <head>
-    <title>DataSource: ${dataSourceAddSchema.dataSource.name}</title>
+    <title>DataSource: ${schemaCreate.dataSource.name}</title>
 </head>
 <body>
 
 <div class="container">
-    <h1>${dataSourceAddSchema.dataSource.name}</h1>
-    <form:form modelAttribute="dataSourceAddSchema" method="post">
+    <h1>${schemaCreate.dataSource.name}</h1>
+    <form:form modelAttribute="schemaCreate" method="post">
         <fieldset>
             <legend>Add Schema</legend>
             <form:hidden path="schema.dataSourceId"/>
@@ -29,7 +29,7 @@
             </div>
         </fieldset>
         <div class="text-right">
-            <a class="btn btn-default" href="${spring:mvcUrl("dataSourceShow").arg(0,dataSourceAddSchema.dataSource.id).build()}">Back</a>
+            <a class="btn btn-default" href="${spring:mvcUrl("dataSourceShow").arg(0,schemaCreate.dataSource.id).build()}">Back</a>
             <button type="submit" class="btn btn-success">Add Schema</button>
         </div>
     </form:form>

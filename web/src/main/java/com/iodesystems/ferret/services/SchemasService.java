@@ -1,6 +1,7 @@
 package com.iodesystems.ferret.services;
 
 import com.iodesystems.ferret.db.tables.records.SchemaRecord;
+import com.iodesystems.ferret.models.DataSource;
 import com.iodesystems.ferret.models.Schema;
 import com.iodesystems.ferret.query.Page;
 import com.iodesystems.ferret.query.PageFactory;
@@ -27,9 +28,11 @@ public class SchemasService {
 
     private Field<Integer> TABLE_COUNT = DSL.selectCount().from(TABLE).where(TABLE.SCHEMA_ID.eq(SCHEMA.ID)).asField();
 
-    public Page<Schema> find(PageRequest pageRequest) {
+    public Page<Schema> find(DataSource dataSource, PageRequest pageRequest) {
+        SelectQuery<Record> query = getQuery();
+        query.addConditions(SCHEMA.DATA_SOURCE_ID.equal(dataSource.getId()));
         return pageFactory
-            .from(pageRequest, getQuery())
+            .from(pageRequest, query)
             .convertAndBuild(getMapper());
     }
 
@@ -38,6 +41,7 @@ public class SchemasService {
             Schema schema = new Schema();
             schema.setId(r.get(SCHEMA.ID));
             schema.setName(r.get(SCHEMA.NAME));
+            schema.setDataSourceId(r.get(SCHEMA.DATA_SOURCE_ID));
             schema.setTableCount(r.get(TABLE_COUNT));
             return schema;
         };
@@ -48,6 +52,7 @@ public class SchemasService {
         query.addFrom(SCHEMA);
         query.addSelect(SCHEMA.NAME);
         query.addSelect(SCHEMA.ID);
+        query.addSelect(SCHEMA.DATA_SOURCE_ID);
         query.addSelect(TABLE_COUNT);
         return query;
     }

@@ -26,7 +26,7 @@
             <tr>
                 <td colspan="2">
                     <div class="well text-center">
-                        No schemas found, <a href="${spring:mvcUrl("tableAddField").arg(0,schemaShow.schema.id).build()}">add one</a>?
+                        No tables found, <a href="<c:url value="/data-sources/${schemaShow.schema.dataSourceId}/schemas/${schemaShow.schema.id}/tables/create"/>">add one</a>?
                     </div>
                 </td>
             </tr>

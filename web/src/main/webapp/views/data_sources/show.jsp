@@ -23,9 +23,9 @@
         </jsp:attribute>
         <jsp:attribute name="ifNone">
             <tr>
-                <td>
+                <td colspan="2">
                     <div class="well text-center">
-                        No schemas found, <a href="${spring:mvcUrl("dataSourceAddSchema").arg(0,dataSourceShow.dataSource.id).build()}">add one</a>?
+                        No schemas found, <a href="<c:url value="/data-sources/${dataSourceShow.dataSource.id}/schemas/create"/>">add one</a>?
                     </div>
                 </td>
             </tr>
@@ -33,7 +33,7 @@
         <jsp:attribute name="row">
             <jsp:useBean id="item" scope="request" type="com.iodesystems.ferret.models.Schema"/>
             <tr>
-                <td><a href="<c:url value="/schemas/${item.id}"/>">${item.name}</a></td>
+                <td><a href="<c:url value="/data-sources/${dataSourceShow.dataSource.id}/schemas/${item.id}"/>">${item.name}</a></td>
                 <td>${item.tableCount}</td>
             </tr>
         </jsp:attribute>
