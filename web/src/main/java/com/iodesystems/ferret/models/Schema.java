@@ -6,6 +6,8 @@ public class Schema {
     private Integer tableCount;
     private Integer id;
 
+    private String tablePrefix;
+
     public Integer getId() {
         return id;
     }
@@ -36,5 +38,13 @@ public class Schema {
 
     public void setTableCount(Integer tableCount) {
         this.tableCount = tableCount;
+    }
+
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
+
+    public void setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
     }
 }

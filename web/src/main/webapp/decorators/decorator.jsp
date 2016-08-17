@@ -1,4 +1,5 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html>
 <head>
@@ -41,7 +42,7 @@
                         Settings
                         <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="${spring:mvcUrl("dataSources").build()}">Data Sources</a></li>
+                        <li><a href="<c:url value="/data-sources"/>">Data Sources</a></li>
                         <li><a href="#">Schemas</a></li>
                         <li><a href="#">Entities</a></li>
                         <li><a href="#">Views</a></li>

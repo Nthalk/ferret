@@ -4,6 +4,9 @@ public class DataSource {
     private String name;
     private Integer schemaCount;
     private Integer id;
+    private AccessType accessType;
+    private Boolean allowModifySchemas;
+
 
     public String getName() {
         return name;
@@ -13,12 +16,12 @@ public class DataSource {
         this.name = name;
     }
 
-    public void setSchemaCount(Integer schemaCount) {
-        this.schemaCount = schemaCount;
-    }
-
     public Integer getSchemaCount() {
         return schemaCount;
+    }
+
+    public void setSchemaCount(Integer schemaCount) {
+        this.schemaCount = schemaCount;
     }
 
     public Integer getId() {
@@ -27,5 +30,26 @@ public class DataSource {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public AccessType getAccessType() {
+        return accessType;
+    }
+
+    public void setAccessType(AccessType accessType) {
+        this.accessType = accessType;
+    }
+
+    public Boolean getAllowModifySchemas() {
+        return allowModifySchemas;
+    }
+
+    public void setAllowModifySchemas(Boolean allowModifySchemas) {
+        this.allowModifySchemas = allowModifySchemas;
+    }
+
+    public enum AccessType {
+        JNDI,
+        JDBC
     }
 }

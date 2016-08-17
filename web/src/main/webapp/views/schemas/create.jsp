@@ -13,7 +13,7 @@
 
 <div class="container">
     <h1>${schemaCreate.dataSource.name}</h1>
-    <form:form modelAttribute="schemaCreate" method="post">
+    <form:form modelAttribute="schemaCreate" method="post" cssClass="form-horizontal">
         <fieldset>
             <legend>Add Schema</legend>
             <form:hidden path="schema.dataSourceId"/>
@@ -27,9 +27,19 @@
                                 placeholder="Schema Name"/>
                 </div>
             </div>
+            <div class="form-group">
+                <form:label class="col-lg-2 control-label" path="schema.name">
+                    Prefix for all tables <form:errors path="schema.tablePrefix"/>
+                </form:label>
+                <div class="col-lg-6">
+                    <form:input path="schema.tablePrefix"
+                                class="form-control"
+                                placeholder="Table Prefix"/>
+                </div>
+            </div>
         </fieldset>
         <div class="text-right">
-            <a class="btn btn-default" href="${spring:mvcUrl("dataSourceShow").arg(0,schemaCreate.dataSource.id).build()}">Back</a>
+            <a class="btn btn-default" href="<c:url value="/data-sources/${schemaCreate.dataSource.id}"/>">Back</a>
             <button type="submit" class="btn btn-success">Add Schema</button>
         </div>
     </form:form>

@@ -1,9 +1,10 @@
 <%@tag description="Table" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="url" tagdir="/WEB-INF/tags/url" %>
 <%@attribute name="header" required="true" fragment="true" %>
 <%@attribute name="row" required="true" fragment="true" %>
 <%@attribute name="ifNone" required="false" fragment="true" %>
-<%@attribute name="paginationUrl" required="true" fragment="true" %>
+<%@attribute name="paginationUrl" required="false" fragment="true" %>
 <%@attribute name="page" required="true" type="com.iodesystems.ferret.query.Page" %>
 
 <table class="table">
@@ -36,12 +37,60 @@
             </c:if>
         </div>
         <c:if test="${page.totalPages > 1}">
+
+            <c:set var="p" value="${page.page}"/> <%-- current page (1-based) --%>
+            <c:set var="l" value="7"/> <%-- amount of page links to be displayed --%>
+            <c:set var="r" value="${l / 2}"/> <%-- minimum link range ahead/behind --%>
+            <c:set var="t" value="${page.totalPages}"/> <%-- total amount of pages --%>
+
+            <c:set var="begin" value="${((p - r) > 0 ? ((p - r) < (t - l + 1) ? (p - r) : (t - l)) : 0) + 1}"/>
+            <c:set var="end" value="${(p + r) < t ? ((p + r) > l ? (p + r) : l) : t}"/>
+
             <nav>
                 <ul class="pagination">
-                    <c:forEach var="page" begin="1" end="${page.totalPages}">
-                        <c:set var="page" scope="request" value="${page}"/>
-                        <li><a href="<jsp:invoke fragment="paginationUrl"/>">${page}</a></li>
+                    <c:if test="${page.page > 1}">
+                        <c:set var="pageNumber" scope="request" value="${page.page - 1}"/>
+                        <c:choose>
+                            <c:when test="${empty paginationUrl}">
+                                <c:set var="paginationUrlValue"><url:replaceParam name="page" value="${pageNumber}"/></c:set>
+                            </c:when>
+                            <c:otherwise>
+                                <jsp:invoke fragment="paginationUrl" var="paginationUrlValue"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <li><a href="${paginationUrlValue}">&laquo;</a></li>
+                    </c:if>
+                    <c:forEach var="pageNumber" begin="${begin}" end="${end}">
+                        <c:choose>
+                            <c:when test="${pageNumber == page.page}">
+                                <li class="active"><a>${pageNumber}</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${empty paginationUrl}">
+                                        <c:set var="paginationUrlValue"><url:replaceParam name="page" value="${pageNumber}"/></c:set>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="pageNumber" scope="request" value="${pageNumber}"/>
+                                        <jsp:invoke fragment="paginationUrl" var="paginationUrlValue"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <li><a href="${paginationUrlValue}">${pageNumber}</a></li>
+                            </c:otherwise>
+                        </c:choose>
                     </c:forEach>
+                    <c:if test="${page.page < page.totalPages}">
+                        <c:set var="pageNumber" scope="request" value="${page.page + 1}"/>
+                        <c:choose>
+                            <c:when test="${empty paginationUrl}">
+                                <c:set var="paginationUrlValue"><url:replaceParam name="page" value="${pageNumber}"/></c:set>
+                            </c:when>
+                            <c:otherwise>
+                                <jsp:invoke fragment="paginationUrl" var="paginationUrlValue"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <li><a href="${paginationUrlValue}">&raquo;</a></li>
+                    </c:if>
                 </ul>
             </nav>
         </c:if>

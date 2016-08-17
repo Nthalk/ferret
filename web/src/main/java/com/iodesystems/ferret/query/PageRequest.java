@@ -2,7 +2,7 @@ package com.iodesystems.ferret.query;
 
 public class PageRequest {
 
-    private int perPage = 50;
+    private int perPage = 15;
     private int page = 1;
 
     public PageRequest(Integer page) {

@@ -3,6 +3,7 @@ package com.iodesystems.ferret.web.controllers;
 import com.iodesystems.ferret.query.PageRequest;
 import com.iodesystems.ferret.services.DataSourcesService;
 import com.iodesystems.ferret.services.SchemasService;
+import com.iodesystems.ferret.web.controllers.models.DataSourceCreate;
 import com.iodesystems.ferret.web.controllers.models.DataSourceShow;
 import com.iodesystems.ferret.web.controllers.models.DataSourcesIndex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +20,19 @@ public class DataSourcesController {
     @Autowired
     SchemasService schemasService;
 
-    @RequestMapping(
-        name = "dataSources",
-        method = RequestMethod.GET)
+    @GetMapping
     public String index(@ModelAttribute DataSourcesIndex dataSourcesIndex,
                         @RequestParam(defaultValue = "1") Integer page) {
         dataSourcesIndex.setDataSources(dataSourcesService.find(new PageRequest(page)));
         return "data_sources/index";
     }
 
-    @RequestMapping(
-        value = "{id}",
-        method = RequestMethod.GET)
+    @GetMapping(value = "create")
+    public String build(@ModelAttribute DataSourceCreate dataSourceCreate) {
+        return "data_sources/create";
+    }
+
+    @GetMapping(value = "{id}")
     public String show(@PathVariable Integer id,
                        @RequestParam(defaultValue = "1") Integer schemasPage,
                        @ModelAttribute DataSourceShow dataSourceShow) {
