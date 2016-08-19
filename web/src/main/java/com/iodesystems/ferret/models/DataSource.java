@@ -1,5 +1,7 @@
 package com.iodesystems.ferret.models;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class DataSource {
     private String name;
     private Integer schemaCount;
@@ -7,7 +9,7 @@ public class DataSource {
     private AccessType accessType;
     private Boolean allowModifySchemas;
 
-
+    @NotEmpty
     public String getName() {
         return name;
     }

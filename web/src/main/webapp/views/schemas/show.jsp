@@ -32,10 +32,9 @@
             </tr>
         </jsp:attribute>
         <jsp:attribute name="row">
-            <jsp:useBean id="item" scope="request" type="com.iodesystems.ferret.models.Schema"/>
+            <jsp:useBean id="item" scope="request" type="com.iodesystems.ferret.models.Table"/>
             <tr>
                 <td><a href="<c:url value="/tables/${item.id}"/>">${item.name}</a></td>
-                <td>${item.tableCount}</td>
             </tr>
         </jsp:attribute>
         <jsp:attribute name="paginationUrl">

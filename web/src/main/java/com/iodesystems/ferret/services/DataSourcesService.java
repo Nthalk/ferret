@@ -1,6 +1,7 @@
 package com.iodesystems.ferret.services;
 
 import com.iodesystems.ferret.models.DataSource;
+import com.iodesystems.ferret.models.DataSourceReference;
 import com.iodesystems.ferret.query.Page;
 import com.iodesystems.ferret.query.PageFactory;
 import com.iodesystems.ferret.query.PageRequest;
@@ -12,6 +13,8 @@ import org.jooq.SelectQuery;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.iodesystems.ferret.db.Tables.DATA_SOURCE;
 import static com.iodesystems.ferret.db.Tables.SCHEMA;
@@ -52,5 +55,20 @@ public class DataSourcesService {
         SelectQuery<Record> query = getQuery();
         query.addConditions(DATA_SOURCE.ID.equal(id));
         return mapper.from(query.fetchOne());
+    }
+
+    public DataSource create(DataSource dataSource) {
+        return findById(
+            db.insertInto(DATA_SOURCE)
+                .set(DATA_SOURCE.NAME, dataSource.getName())
+                .returning()
+                .fetchOne().getId());
+    }
+
+    public List<DataSourceReference> findAllReferences() {
+        return db
+            .select(DATA_SOURCE.ID, DATA_SOURCE.NAME)
+            .from(DATA_SOURCE)
+            .fetch(r -> new DataSourceReference(r.get(DATA_SOURCE.ID), r.get(DATA_SOURCE.NAME)));
     }
 }

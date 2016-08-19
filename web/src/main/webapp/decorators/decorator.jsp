@@ -7,11 +7,34 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/css/bootstrap.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/toastr/2.1.2/build/toastr.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loader.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css"/>
+
+    <script src="${pageContext.request.contextPath}/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/vue/1.0.24/vue.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/toastr/2.1.2/build/toastr.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/ajaxy.forms.js"></script>
+    <script src="${pageContext.request.contextPath}/js/integration/bootstrap.modal.fix.js"></script>
+
     <sitemesh:write property='head'/>
 </head>
 <body>
 
+<%-- Notifications --%>
+<c:if test="${not empty notifications}">
+    <jsp:useBean id="notifications" scope="session" type="java.util.List<com.iodesystems.ferret.web.models.Notification>"/>
+    <c:forEach var="notification" items="${notifications}">
+        <script>
+            toastr["${notification.type}"]("${notification.message}");
+        </script>
+    </c:forEach>
+    <%session.removeAttribute("notifications");%>
+</c:if>
+
+<%-- Nav Bar --%>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -56,10 +79,9 @@
     </div>
 </nav>
 
-<sitemesh:write property="body"/>
+<div id="main">
+    <sitemesh:write property="body"/>
+</div>
 
-<script src="${pageContext.request.contextPath}/webjars/jquery/1.11.1/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/webjars/vue/1.0.24/vue.min.js"></script>
-<script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>
 </html>

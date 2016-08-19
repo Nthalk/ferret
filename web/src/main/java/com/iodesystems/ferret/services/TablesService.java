@@ -50,4 +50,13 @@ public class TablesService {
         query.addConditions(TABLE.ID.equal(id));
         return mapper.from(query.fetchOne());
     }
+
+    public Table create(Table table) {
+        return mapper.from(
+            db.insertInto(TABLE)
+                .set(TABLE.SCHEMA_ID, table.getSchemaId())
+                .set(TABLE.NAME, table.getName())
+                .returning()
+                .fetchOne());
+    }
 }

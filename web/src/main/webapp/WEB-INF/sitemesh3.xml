@@ -6,4 +6,5 @@
     <mapping path="/*">
         <decorator>/decorators/decorator.jsp</decorator>
     </mapping>
+    <mapping path="/**/ajax/**" exclude="true" />
 </sitemesh>
