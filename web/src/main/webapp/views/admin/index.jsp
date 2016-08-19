@@ -9,6 +9,7 @@
 <body>
 
 <style>
+
     .navTree {
         border: 1px solid #e7e7e7;
         border-top: 0;
@@ -52,7 +53,7 @@
             <li>
                 <i class="fa fa-server fa-1" aria-hidden="true"></i> ${dataSource.label}
                 <a href="<c:url value="/admin/ajax/data-source-manage"/>" class="btn btn-default btn-xs pull-right"
-                   data-target="#dataSourceManage"
+                   data-target="#dataSourceManageModal"
                    data-toggle="modal"><i class="fa fa-cog fa-1"></i></a>
                 <ul>
                     <c:forEach var="schema" items="${dataSource.children}">
@@ -72,6 +73,14 @@
 </div>
 
 <div id="dataSourceCreateModal" class="modal modal-fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="loader" style="font-size: 10px"></div>
+        </div>
+    </div>
+</div>
+
+<div id="dataSourceManageModal" class="modal modal-fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="loader" style="font-size: 10px"></div>

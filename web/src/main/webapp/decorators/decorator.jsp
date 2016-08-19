@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/css/bootstrap.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/font-awesome/4.6.3/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/toastr/2.1.2/build/toastr.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/c3/0.4.11/c3.min.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loader.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site.css"/>
 
     <script src="${pageContext.request.contextPath}/webjars/jquery/1.11.1/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/d3js/3.5.5/d3.min.js"></script>
+    <script src="${pageContext.request.contextPath}/webjars/c3/0.4.11/c3.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/vue/1.0.24/vue.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/toastr/2.1.2/build/toastr.min.js"></script>

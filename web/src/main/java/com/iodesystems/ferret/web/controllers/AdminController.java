@@ -5,6 +5,7 @@ import com.iodesystems.ferret.services.DataSourcesService;
 import com.iodesystems.ferret.web.controllers.models.AdminIndex;
 import com.iodesystems.ferret.web.controllers.models.AjaxRedirect;
 import com.iodesystems.ferret.web.controllers.models.DataSourceCreate;
+import com.iodesystems.ferret.web.controllers.models.DataSourceManage;
 import com.iodesystems.ferret.web.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,11 @@ public class AdminController {
     public String index(@ModelAttribute AdminIndex adminIndex) {
         adminIndex.setNavTree(adminService.getNavTree());
         return "admin/index";
+    }
+
+    @GetMapping("ajax/data-source-manage")
+    public String buildDataSource(@ModelAttribute DataSourceManage dataSourceManage) {
+        return "admin/ajax/data_source_manage";
     }
 
     @GetMapping("ajax/data-source-create")
