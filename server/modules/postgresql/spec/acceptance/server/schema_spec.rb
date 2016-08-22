@@ -1,7 +1,7 @@
 require 'spec_helper_acceptance'
 
-describe 'postgresql::server::schema:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
-  it 'should create a schema for a user' do
+describe 'postgresql::server::xsd:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
+  it 'should create a xsd for a user' do
     begin
       pp = <<-EOS.unindent
         $db = 'schema_test'
@@ -33,7 +33,7 @@ describe 'postgresql::server::schema:', :unless => UNSUPPORTED_PLATFORMS.include
           order       => 1,
         }
 
-        postgresql::server::schema { $user:
+        postgresql::server::xsd { $user:
           db      => $db,
           owner   => $user,
           require => Postgresql::Server::Database[$db],

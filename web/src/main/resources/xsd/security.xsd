@@ -1,0 +1,67 @@
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+           xmlns='uri:fulcrum.net:schemas:ferret'
+           targetNamespace='uri:fulcrum.net:schemas:ferret'>
+
+    <xs:complexType name="Security">
+        <xs:sequence>
+            <xs:element name="authentication" type="SecurityAuthenticationProvider" minOccurs="0"/>
+            <xs:element name="roles" type="SecurityRoles"/>
+        </xs:sequence>
+        <xs:attribute name="policy" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityAuthenticationProvider">
+        <xs:choice>
+            <xs:element name="static" type="SecurityStaticAuthenticationProvider"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="SecurityStaticAuthenticationProvider">
+        <xs:sequence>
+            <xs:element name="user" type="User"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="User">
+        <xs:sequence>
+            <xs:element name="role" type="SecurityRole" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="password" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="SecurityRole">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="SecurityRoles">
+        <xs:sequence>
+            <xs:element name="role" type="SecurityRolePermissions"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityRolePermissions">
+        <xs:sequence>
+            <xs:element name="query" type="SecurityRoleQueryPermission" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="route" type="SecurityRoleRoutePermission" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityRolePermission">
+        <xs:attribute name="allow" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityRoleQueryPermission">
+        <xs:complexContent>
+            <xs:extension base="SecurityRolePermission">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SecurityRoleRoutePermission">
+        <xs:complexContent>
+            <xs:extension base="SecurityRolePermission">
+                <xs:attribute name="path" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

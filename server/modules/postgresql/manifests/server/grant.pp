@@ -97,7 +97,7 @@ define postgresql::server::grant (
   #   role        => 'joe',
   #   ...
   #   object_type => 'TABLE',
-  #   object_name => [$schema, $table],
+  #   object_name => [$xsd, $table],
   # }
   if is_array($_object_name) {
     $_togrant_object = join($_object_name, '"."')

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe 'postgresql::server::schema', :type => :define do
+describe 'postgresql::server::xsd', :type => :define do
   let :facts do
     {
       :osfamily => 'Debian',
       :operatingsystem => 'Debian',
       :operatingsystemrelease => '6.0',
       :kernel => 'Linux',
-      :concat_basedir => tmpfilename('schema'),
+      :concat_basedir => tmpfilename('xsd'),
       :id => 'root',
       :path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
     }

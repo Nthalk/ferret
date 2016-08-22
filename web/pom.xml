@@ -12,8 +12,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <spring.version>4.3.2.RELEASE</spring.version>
-        <spring.security.version>4.1.2.RELEASE</spring.security.version>
         <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
         <jdbc.url>jdbc:postgresql://127.0.0.1:5432/ferret</jdbc.url>
         <jdbc.driver>org.postgresql.Driver</jdbc.driver>
@@ -42,61 +40,33 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/gen</source>
+                                <source>${project.basedir}/gen/xsd</source>
                             </sources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Run database migrations -->
+            <!-- Generate java from xsds -->
             <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>4.0</version>
-                <configuration>
-                    <user>ferret</user>
-                    <password>ferret</password>
-                    <url>jdbc:postgresql://127.0.0.1:5432/ferret</url>
-                    <driver>org.postgresql.Driver</driver>
-                    <schemas>
-                        <schema>ferret</schema>
-                    </schemas>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
-            <!-- Generate Java objects from database-->
-            <plugin>
-                <groupId>org.jooq</groupId>
-                <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.8.4</version>
-                <configuration>
-                    <jdbc>
-                        <user>${jdbc.user}</user>
-                        <password>${jdbc.password}</password>
-                        <url>${jdbc.url}</url>
-                        <driver>org.postgresql.Driver</driver>
-                    </jdbc>
-                    <generator>
-                        <database>
-                            <inputSchema>ferret</inputSchema>
-                        </database>
-                        <generate>
-                            <pojos>true</pojos>
-                        </generate>
-                        <target>
-                            <packageName>com.iodesystems.ferret.db</packageName>
-                            <directory>${project.basedir}/gen</directory>
-                        </target>
-                    </generator>
-                </configuration>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.13.1</version>
+                <executions>
+                    <execution>
+                        <id>xjc-scores</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generateDirectory>${project.basedir}/gen/xsd</generateDirectory>
+                            <generatePackage>com.iodesystems.ferret.xsd</generatePackage>
+                            <schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
+                            <removeOldOutput>true</removeOldOutput>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -115,13 +85,6 @@
             <version>1.2</version>
         </dependency>
 
-        <!-- Validations -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.2.3.Final</version>
-        </dependency>
-
         <!-- Jaxb -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
@@ -132,13 +95,6 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
             <version>2.2.11</version>
-        </dependency>
-
-        <!-- Sitemesh -->
-        <dependency>
-            <groupId>org.sitemesh</groupId>
-            <artifactId>sitemesh</artifactId>
-            <version>3.0.1</version>
         </dependency>
 
         <!-- Web Resources -->
@@ -163,40 +119,6 @@
             <version>2.1.2</version>
         </dependency>
 
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- Security -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
-
         <!-- Database -->
         <dependency>
             <groupId>org.jooq</groupId>
@@ -213,11 +135,6 @@
             <artifactId>HikariCP-java6</artifactId>
             <version>2.3.13</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
         <!-- Json -->
         <dependency>
@@ -230,7 +147,7 @@
         <dependency>
             <groupId>com.iodesystems</groupId>
             <artifactId>fn</artifactId>
-            <version>1.1.6</version>
+            <version>1.1.7</version>
         </dependency>
 
         <!-- Logging -->

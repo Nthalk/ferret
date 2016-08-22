@@ -57,7 +57,7 @@ Puppet::Type.newtype(:postgresql_psql) do
   end
 
   newparam(:search_path) do
-    desc "The schema search path to use when executing the SQL command"
+    desc "The xsd search path to use when executing the SQL command"
   end
 
   newparam(:psql_path) do

@@ -1,0 +1,157 @@
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+           xmlns='uri:fulcrum.net:schemas:ferret'
+           targetNamespace='uri:fulcrum.net:schemas:ferret'>
+
+    <xs:complexType name="UserInterfaces">
+        <xs:sequence>
+            <xs:element name="ui" type="UserInterface" maxOccurs="unbounded"/>
+            <xs:element name="messages" type="Messages"/>
+            <xs:element name="templates" type="Templates"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Renderable">
+        <xs:sequence>
+            <xs:element name="form" type="Form"/>
+            <xs:element name="layout" type="Renderable"/>
+            <xs:element name="row" type="Renderable"/>
+            <xs:element name="col" type="Renderable"/>
+            <xs:element name="select" type="SelectField"/>
+            <xs:element name="dataGrid" type="DataGrid"/>
+            <xs:element name="dataTable" type="DataTable"/>
+        </xs:sequence>
+        <xs:attribute name="if" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="UserInterface">
+        <xs:sequence>
+            <xs:element name="out" type="UiOutput"/>
+            <xs:element name="form" type="Form"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="Widget">
+        <xs:attribute name="id" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DataDrivenWidget">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:sequence>
+                    <xs:element name="bind" type="DataDrivenWidgetBinding"/>
+                </xs:sequence>
+                <xs:attribute name="query" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DataTable">
+        <xs:complexContent>
+            <xs:extension base="DataDrivenWidget">
+                <xs:sequence>
+                    <xs:element name="column" type="DataTableColumn"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DataTableColumn">
+
+    </xs:complexType>
+    <xs:complexType name="DataDrivenWidgetBinding">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="to" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Widgets">
+        <xs:sequence>
+            <xs:element name="widget" type="Widget"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Messages">
+        <xs:sequence>
+            <xs:element name="message" type="Message"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Message">
+        <xs:attribute name="code" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="UiOutput"/>
+
+    <xs:complexType name="Form">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SelectField">
+        <xs:complexContent>
+            <xs:extension base="InputField">
+                <xs:attribute name="query" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="NumberField">
+        <xs:complexContent>
+            <xs:extension base="TextField">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="HiddenField">
+        <xs:complexContent>
+            <xs:extension base="TextField">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AutoComplete">
+        <xs:complexContent>
+            <xs:extension base="TextField">
+                <xs:attribute name="query" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TextField">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+                <xs:attribute name="required" type="xs:boolean"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Link">
+        <xs:attribute name="url" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="InputField">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="DataGrid">
+        <xs:complexContent>
+            <xs:extension base="DataDrivenWidget">
+                <xs:sequence>
+                    <xs:element name="row" type="Renderable"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Templates">
+        <xs:sequence>
+            <xs:element name="template" type="Template"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Template">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+                <xs:attribute name="id" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

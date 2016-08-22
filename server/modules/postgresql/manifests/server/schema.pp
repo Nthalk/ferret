@@ -1,6 +1,6 @@
-# = Type: postgresql::server::schema
+# = Type: postgresql::server::xsd
 #
-# Create a new schema. See README.md for more details.
+# Create a new xsd. See README.md for more details.
 #
 # == Requires:
 #
@@ -8,7 +8,7 @@
 #
 # == Sample Usage:
 #
-# postgresql::server::schema {'private':
+# postgresql::server::xsd {'private':
 #     db => 'template1',
 # }
 #

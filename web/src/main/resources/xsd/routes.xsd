@@ -1,0 +1,78 @@
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+           xmlns='uri:fulcrum.net:schemas:ferret'
+           targetNamespace='uri:fulcrum.net:schemas:ferret'>
+
+    <xs:complexType name="Route">
+        <xs:choice>
+            <xs:sequence>
+                <xs:element name="controller" type="RouteController"/>
+            </xs:sequence>
+            <xs:sequence>
+                <xs:element name="route" type="Route"/>
+            </xs:sequence>
+        </xs:choice>
+        <xs:attribute name="method" type="RouteRequestMethod" default="GET"/>
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="ui" type="xs:string"/>
+        <xs:attribute name="path" type="xs:string"/>
+        <xs:attribute name="title" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:simpleType name="RouteRequestMethod">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GET"/>
+            <xs:enumeration value="POST"/>
+            <xs:enumeration value="PUT"/>
+            <xs:enumeration value="DELETE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="RouteController">
+        <xs:complexContent>
+            <xs:extension base="Route">
+                <xs:sequence>
+                    <xs:element name="index" type="RouteIndex" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="show" type="RouteShow" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="create" type="RouteCreate" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="update" type="RouteUpdate" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="delete" type="RouteDelete" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="query" type="xs:string"/>
+                <xs:attribute name="label" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteAction">
+        <xs:attribute name="ui" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="RouteIndex">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteShow">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+                <xs:attribute name="by" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteCreate">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteDelete">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteUpdate">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

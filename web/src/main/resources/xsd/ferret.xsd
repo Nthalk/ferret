@@ -1,0 +1,36 @@
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+           xmlns='uri:fulcrum.net:schemas:ferret'
+           targetNamespace='uri:fulcrum.net:schemas:ferret'
+           elementFormDefault='qualified'>
+
+    <xs:include schemaLocation="data.xsd"/>
+    <xs:include schemaLocation="ui.xsd"/>
+    <xs:include schemaLocation="types.xsd"/>
+    <xs:include schemaLocation="security.xsd"/>
+    <xs:include schemaLocation="routes.xsd"/>
+
+    <xs:element name="ferret" type="Ferret"/>
+
+    <xs:complexType name="Ferret">
+        <xs:sequence>
+            <xs:element name="import" type="Import" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="data" type="DataConnection" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ui" type="UserInterfaces" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="types" type="DataTypes" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="security" type="Security" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="route" type="Route" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Import">
+        <xs:complexContent>
+            <xs:restriction base="xs:anyType">
+                <xs:attribute name="resource" type="xs:string" use="required"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+
+
+</xs:schema>

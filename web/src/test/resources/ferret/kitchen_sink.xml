@@ -1,0 +1,192 @@
+<!--
+    The Ferret descriptor is a document that contains
+
+        type:       how to work with data
+        data:       what data is available and how to access it
+        ui:         how to render things
+        route:      how to organize an ui's with data
+        security:   how to identify users and manage their access of data and routes
+-->
+<ferret xmlns="uri:fulcrum.net:schemas:ferret">
+
+    <!-- These should be able to be externalizable -->
+    <import resource="types.xml"/>
+    <import resource="data.xml"/>
+    <import resource="ui.xml"/>
+    <import resource="routes.xml"/>
+
+    <!-- Types define underlying data types and query behavior -->
+    <types>
+        <type id="string"
+              type="String"/>
+        <type id="number"
+              type="Number"/>
+
+        <typeExtension id="indexedString"
+                       extends="String"
+                       search="STARTS_WITH"/>
+        <typeExtension id="code"
+                       extends="indexedString"/>
+        <typeExtension id="description"
+                       extends="String"/>
+        <typeExtension id="id"
+                       primary-key="true"
+                       extends="number"/>
+        <typeExtension id="currency"
+                       extends="number"/>
+
+        <referenceType id="location"
+                       query="LOCATION"
+                       by="ID"
+                       show="NAME"/>
+
+        <virtualType id="gps">
+            <field name="LATITUDE" type="number"/>
+            <field name="LONGITUDE" type="number"/>
+        </virtualType>
+
+        <virtualType id="address">
+            <field name="ADDRESS1" type="string"/>
+            <field name="ADDRESS2" type="string"/>
+            <field name="ADDRESS3" type="string"/>
+            <field name="CITY" type="string"/>
+            <field name="STATE" type="string"/>
+            <field name="ZIP" type="string"/>
+        </virtualType>
+    </types>
+
+    <!-- Data defines how to connect to databases, what queries there are, and metadata about their results -->
+    <data name="ferret">
+
+        <jdbc
+            username="ferret"
+            password="ferret"
+            driver="org.postgresql.Driver"
+            jdbcUrl="jdbc:postgresql://localhost:5432/ferret"/>
+
+        <table id="assets" name="ASSET">
+            <field name="ID"
+                   type="id"/>
+            <field name="CODE"
+                   type="code"/>
+            <field name="COST"
+                   type="currency"/>
+            <field name="LOCATIONID"
+                   type="location"/>
+        </table>
+
+        <table name="LOCATION">
+            <field name="ID"
+                   type="Number"/>
+            <field name="NAME"
+                   type="string"/>
+            <field name="ADDRESS"
+                   type="address"/>
+        </table>
+
+        <table name="LOCATION_TYPE">
+            <field name="ID"
+                   type="Number"/>
+            <field name="NAME"
+                   type="string"/>
+        </table>
+
+        <view id="LOCATIONS_WITH_LOCATION_TYPE" query="LOCATION" as="L">
+            <join query="LOCATION_TYPE" as="T" on="L.LOCATIONTYPEID= T.ID"/>
+        </view>
+
+        <options id="LOCATION_NAME_OPTIONS"
+                 query="LOCATION"
+                 value="ID"
+                 label="NAME"/>
+
+        <options id="LOCATION_TYPE_OPTIONS"
+                 query="LOCATION_TYPE"
+                 label="NAME"
+                 value="ID"/>
+
+    </data>
+
+    <!-- Ui defines how things look -->
+    <ui>
+        <messages>
+            <message code="LOCATION.NAME" value="Name"/>
+        </messages>
+
+        <templates>
+            <template id="editForm">
+                <form>
+
+                </form>
+            </template>
+        </templates>
+
+        <ui id="home">
+            <out/>
+        </ui>
+
+        <ui id="locations">
+            <form>
+                <layout>
+                    <row>
+                        <col>
+                            <select name="LOCATIONID" query="LOCATION_NAME_OPTIONS"/>
+                        </col>
+                        <col>
+                            <select name="LOCATIONTYPEID" query="LOCATION_TYPE_OPTIONS"/>
+                        </col>
+                    </row>
+                    <row if=":LOCATIONID != null">
+                        <dataGrid query="LOCATION_TYPE">
+                            <bind name=":LOCATIONID"/>
+                            <row>
+                                <col/>
+                                <col/>
+                            </row>
+                        </dataGrid>
+                        <dataTable query="LOCATION"/>
+                    </row>
+                </layout>
+            </form>
+        </ui>
+    </ui>
+
+    <security policy="denyAll">
+        <authentication>
+            <static>
+                <user name="admin" password="admin">
+                    <role name="ADMIN"/>
+                </user>
+            </static>
+        </authentication>
+        <roles>
+            <role name="ADMIN">
+                <query name="/**" allow="modify"/>
+                <route path="/**" allow="modify"/>
+            </role>
+            <role name="TECH">
+                <query name="/**" allow="read"/>
+                <route path="/**" allow="read"/>
+            </role>
+        </roles>
+    </security>
+
+    <route id="Home"
+           path="/"
+           ui="home">
+        <controller path="/carl/:arg">
+            <index ui="carl"/>
+        </controller>
+
+        <controller label="Locations"
+                    path="/locations"
+                    query="LOCATION">
+            <index/>
+            <show by="ID"/>
+            <create/>
+            <update/>
+            <delete/>
+        </controller>
+
+    </route>
+</ferret>
