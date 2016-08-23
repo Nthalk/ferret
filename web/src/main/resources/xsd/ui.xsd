@@ -19,26 +19,31 @@
             <xs:element name="select" type="SelectField"/>
             <xs:element name="dataGrid" type="DataGrid"/>
             <xs:element name="dataTable" type="DataTable"/>
+            <xs:element name="dataForm" type="DataForm"/>
         </xs:sequence>
         <xs:attribute name="if" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="UserInterface">
-        <xs:sequence>
-            <xs:element name="out" type="UiOutput"/>
-            <xs:element name="form" type="Form"/>
-        </xs:sequence>
-        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+                <xs:sequence>
+                    <xs:element name="out" type="UiOutput"/>
+                    <xs:element name="form" type="Form"/>
+                </xs:sequence>
+                <xs:attribute name="id" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
 
-    <xs:complexType name="Widget">
+    <xs:complexType name="RenderableComponent">
         <xs:attribute name="id" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="DataDrivenWidget">
         <xs:complexContent>
-            <xs:extension base="Widget">
+            <xs:extension base="RenderableComponent">
                 <xs:sequence>
                     <xs:element name="bind" type="DataDrivenWidgetBinding"/>
                 </xs:sequence>
@@ -57,6 +62,16 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="DataForm">
+        <xs:complexContent>
+            <xs:extension base="DataDrivenWidget">
+                <xs:sequence>
+                    <xs:element name="column" type="DataTableColumn"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="DataTableColumn">
 
     </xs:complexType>
@@ -65,11 +80,6 @@
         <xs:attribute name="to" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="Widgets">
-        <xs:sequence>
-            <xs:element name="widget" type="Widget"/>
-        </xs:sequence>
-    </xs:complexType>
     <xs:complexType name="Messages">
         <xs:sequence>
             <xs:element name="message" type="Message"/>

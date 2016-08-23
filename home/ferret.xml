@@ -138,22 +138,22 @@
                         <dataGrid query="LOCATION_TYPE">
                             <bind name=":LOCATIONID"/>
                             <row>
-                                <col field="NAME"/>
-                                <col field=""/>
+                                <col/>
+                                <col/>
                             </row>
                         </dataGrid>
-                        <dataTable query="LOCATION" auto-bind="true"/>
+                        <dataTable query="LOCATION"/>
                     </row>
                 </layout>
             </form>
         </ui>
 
         <ui id="locationsCreate">
-            <createForm query="LOCATIONS"/>
+            <dataForm query="LOCATIONS"/>
         </ui>
 
         <ui id="locationsUpdate">
-            <updateForm query="LOCATIONS"/>
+            <dataForm query="LOCATIONS"/>
         </ui>
 
         <ui id="carl">
@@ -169,17 +169,14 @@
                 </user>
             </static>
         </authentication>
-        <anonymous>
-            <query name="PUBLIC_TABLE" permission="read"/>
-            <route path="/"/>
-        </anonymous>
         <roles>
+            <anonymous/>
             <role name="ADMIN">
                 <query name="/**"/>
                 <route path="/**"/>
             </role>
             <role name="TECH">
-                <query name="/**" permission="read"/>
+                <query name="/**" allow="read"/>
                 <route path="/**"/>
             </role>
         </roles>
@@ -193,26 +190,20 @@
         </controller>
         <controller label="Locations"
                     path="/locations"
-                    query="LOCATION"
-                    show-by="ID">
-            <index query="LOCATION"/>
-            <show id="locationShow"
-                  query="LOCATION"
-                  query-by="ID">
-                <action path="/activate"/>
-                <action path="/deactivate"/>
-            </show>
-            <create query="LOCATION"/>
-            <update query="LOCATION"/>
-            <delete query="LOCATION"/>
+                    query="LOCATION">
+            <index/>
+            <show by="ID"/>
+            <create/>
+            <update/>
+            <delete/>
         </controller>
         <controller label="Assets"
                     path="/assets"
                     query="assets">
-            <index query="assets"/>
-            <show query="assets" query-by="ID"/>
-            <create query="assets"/>
-            <update query="assets"/>
+            <index/>
+            <show by="ID"/>
+            <create/>
+            <update/>
         </controller>
     </route>
 </ferret>

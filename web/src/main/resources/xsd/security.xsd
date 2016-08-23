@@ -34,6 +34,7 @@
 
     <xs:complexType name="SecurityRoles">
         <xs:sequence>
+            <xs:element name="anonymous" type="SecurityRolePermissions" minOccurs="1" maxOccurs="1"/>
             <xs:element name="role" type="SecurityRolePermissions"/>
         </xs:sequence>
     </xs:complexType>
