@@ -3,11 +3,486 @@
            targetNamespace='uri:fulcrum.net:schemas:ferret'
            elementFormDefault='qualified'>
 
-    <xs:include schemaLocation="data.xsd"/>
-    <xs:include schemaLocation="ui.xsd"/>
-    <xs:include schemaLocation="types.xsd"/>
-    <xs:include schemaLocation="security.xsd"/>
-    <xs:include schemaLocation="routes.xsd"/>
+    <!-- Data -->
+    <xs:complexType name="BelongsTo">
+        <xs:complexContent>
+            <xs:extension base="Relation"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Relation">
+        <xs:attribute name="table" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="via" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="HasMany">
+        <xs:complexContent>
+            <xs:extension base="Relation"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Field">
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DataConnection">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="jndiLookup" type="JndiLookup"/>
+                <xs:element name="jdbc" type="JdbcConnect"/>
+            </xs:choice>
+            <xs:element name="idField" type="TableField" maxOccurs="1"/>
+            <xs:element name="table" type="Table"/>
+            <xs:element name="query" type="Query"/>
+            <xs:element name="view" type="View"/>
+            <xs:element name="options" type="OptionsQuery"/>
+        </xs:sequence>
+        <xs:attribute name="read-only" type="xs:boolean" default="false"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="JndiLookup">
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="JdbcConnect">
+        <xs:attribute name="username" type="xs:string"/>
+        <xs:attribute name="password" type="xs:string"/>
+        <xs:attribute name="driver" type="xs:string" use="required"/>
+        <xs:attribute name="jdbcUrl" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="Table">
+        <xs:sequence>
+            <xs:element name="field" type="TableField" minOccurs="1"/>
+            <xs:element name="hasMany" type="HasMany"/>
+            <xs:element name="belongsTo" type="BelongsTo"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="read-only" type="xs:boolean" default="false"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="View">
+        <xs:sequence>
+            <xs:element name="join" type="Join"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="query" type="xs:string"/>
+        <xs:attribute name="as" type="xs:string"/>
+        <xs:attribute name="on" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="OptionsQuery">
+        <xs:attribute name="query" type="xs:string" use="required"/>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+        <xs:attribute name="label" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Join">
+        <xs:attribute name="as" type="xs:string"/>
+        <xs:attribute name="query" type="xs:string"/>
+        <xs:attribute name="on" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Query">
+        <xs:sequence>
+            <xs:element name="sql" type="xs:string" minOccurs="1"/>
+            <xs:element name="field" type="TableField"/>
+            <xs:element name="onInsert" type="xs:string"/>
+            <xs:element name="onUpdate" type="xs:string"/>
+            <xs:element name="onDelete" type="xs:string"/>
+            <xs:element name="hasMany" type="HasMany"/>
+            <xs:element name="belongsTo" type="BelongsTo"/>
+        </xs:sequence>
+        <xs:attribute name="read-only" type="xs:boolean" default="true"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="TableField">
+        <xs:sequence>
+            <xs:element name="aggregate" type="AggregationMethod"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="primary-key" type="xs:boolean"/>
+        <xs:attribute name="reference-table" type="xs:string"/>
+        <xs:attribute name="reference-field" type="xs:string"/>
+        <xs:attribute name="sortable" type="xs:boolean" default="true"/>
+        <xs:attribute name="searchable" type="SearchMethod" default="MATCH"/>
+    </xs:complexType>
+
+
+    <xs:simpleType name="SearchMethod">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OFF"/>
+            <xs:enumeration value="MATCH"/>
+            <xs:enumeration value="STARTS_WITH"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="AggregationMethod">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SUM"/>
+            <xs:enumeration value="COUNT"/>
+            <xs:enumeration value="MAX"/>
+            <xs:enumeration value="MIN"/>
+            <xs:enumeration value="AVG"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!-- Ui -->
+
+    <xs:complexType name="UserInterfaces">
+        <xs:sequence>
+            <xs:element name="ui" type="UserInterface" maxOccurs="unbounded"/>
+            <xs:element name="messages" type="Messages"/>
+            <xs:element name="templates" type="Templates"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Renderable">
+        <xs:sequence>
+            <xs:element name="form" type="Form"/>
+            <xs:element name="layout" type="Renderable"/>
+            <xs:element name="row" type="Renderable"/>
+            <xs:element name="col" type="Renderable"/>
+            <xs:element name="select" type="SelectField"/>
+            <xs:element name="dataGrid" type="DataGrid"/>
+            <xs:element name="dataTable" type="DataTable"/>
+            <xs:element name="dataForm" type="DataForm"/>
+        </xs:sequence>
+        <xs:attribute name="if" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="UserInterface">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+                <xs:sequence>
+                    <xs:element name="out" type="UiOutput"/>
+                    <xs:element name="form" type="Form"/>
+                </xs:sequence>
+                <xs:attribute name="id" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="RenderableComponent">
+        <xs:attribute name="id" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DataDrivenWidget">
+        <xs:complexContent>
+            <xs:extension base="RenderableComponent">
+                <xs:sequence>
+                    <xs:element name="bind" type="DataDrivenWidgetBinding"/>
+                </xs:sequence>
+                <xs:attribute name="query" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DataTable">
+        <xs:complexContent>
+            <xs:extension base="DataDrivenWidget">
+                <xs:sequence>
+                    <xs:element name="column" type="DataTableColumn"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DataForm">
+        <xs:complexContent>
+            <xs:extension base="DataDrivenWidget">
+                <xs:sequence>
+                    <xs:element name="column" type="DataTableColumn"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DataTableColumn">
+
+    </xs:complexType>
+    <xs:complexType name="DataDrivenWidgetBinding">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="to" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Messages">
+        <xs:sequence>
+            <xs:element name="message" type="Message"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Message">
+        <xs:attribute name="code" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="UiOutput"/>
+
+    <xs:complexType name="Form">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SelectField">
+        <xs:complexContent>
+            <xs:extension base="InputField">
+                <xs:attribute name="query" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="NumberField">
+        <xs:complexContent>
+            <xs:extension base="TextField">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="HiddenField">
+        <xs:complexContent>
+            <xs:extension base="TextField">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AutoComplete">
+        <xs:complexContent>
+            <xs:extension base="TextField">
+                <xs:attribute name="query" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TextField">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+                <xs:attribute name="required" type="xs:boolean"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Link">
+        <xs:attribute name="url" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="InputField">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="DataGrid">
+        <xs:complexContent>
+            <xs:extension base="DataDrivenWidget">
+                <xs:sequence>
+                    <xs:element name="row" type="Renderable"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Templates">
+        <xs:sequence>
+            <xs:element name="template" type="Template"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Template">
+        <xs:complexContent>
+            <xs:extension base="Renderable">
+                <xs:attribute name="id" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Types -->
+    <xs:complexType name="DataTypes">
+        <xs:sequence>
+            <xs:element name="type" type="DataTypeSimple" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="typeExtension" type="DataTypeExtension" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="referenceType" type="ReferenceDataType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="virtualType" type="VirtualDataType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DataType">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="search" type="xs:string"/>
+        <xs:attribute name="primary-key" type="xs:boolean"/>
+    </xs:complexType>
+
+    <xs:complexType name="VirtualField">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="VirtualDataType">
+        <xs:sequence>
+            <xs:element name="field" type="VirtualField" minOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DataTypeExtension">
+        <xs:complexContent>
+            <xs:extension base="DataType">
+                <xs:attribute name="extends" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ReferenceDataType">
+        <xs:complexContent>
+            <xs:extension base="DataType">
+                <xs:attribute name="query" type="xs:string" use="required"/>
+                <xs:attribute name="by" type="xs:string" use="required"/>
+                <xs:attribute name="show" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DataTypeSimple">
+        <xs:complexContent>
+            <xs:extension base="DataType">
+                <xs:attribute name="type" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Security -->
+
+    <xs:complexType name="Security">
+        <xs:sequence>
+            <xs:element name="authentication" type="SecurityAuthenticationProvider" minOccurs="0"/>
+            <xs:element name="roles" type="SecurityRoles"/>
+        </xs:sequence>
+        <xs:attribute name="policy" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityAuthenticationProvider">
+        <xs:choice>
+            <xs:element name="static" type="SecurityStaticAuthenticationProvider"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="SecurityStaticAuthenticationProvider">
+        <xs:sequence>
+            <xs:element name="user" type="User"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="User">
+        <xs:sequence>
+            <xs:element name="role" type="SecurityRole" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="password" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="SecurityRole">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="SecurityRoles">
+        <xs:sequence>
+            <xs:element name="anonymous" type="SecurityRolePermissions" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="role" type="SecurityRolePermissions"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityRolePermissions">
+        <xs:sequence>
+            <xs:element name="query" type="SecurityRoleQueryPermission" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="route" type="SecurityRoleRoutePermission" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityRolePermission">
+        <xs:attribute name="allow" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="SecurityRoleQueryPermission">
+        <xs:complexContent>
+            <xs:extension base="SecurityRolePermission">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SecurityRoleRoutePermission">
+        <xs:complexContent>
+            <xs:extension base="SecurityRolePermission">
+                <xs:attribute name="path" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Routes -->
+
+    <xs:complexType name="Route">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+                <xs:sequence>
+                    <xs:element name="controller" type="RouteController" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="path" type="xs:string"/>
+                <xs:attribute name="title" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RouteController">
+        <xs:complexContent>
+            <xs:extension base="Route">
+                <xs:sequence>
+                    <xs:element name="index" type="RouteIndex" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="show" type="RouteShow" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="create" type="RouteCreate" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="update" type="RouteUpdate" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="delete" type="RouteDelete" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="label" type="xs:string"/>
+                <xs:attribute name="query" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteAction">
+        <xs:attribute name="ui" type="xs:string"/>
+        <xs:attribute name="id" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="RouteIndex">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteShow">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+                <xs:attribute name="by" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteCreate">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteDelete">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RouteUpdate">
+        <xs:complexContent>
+            <xs:extension base="RouteAction">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
     <xs:element name="ferret" type="Ferret"/>
 
