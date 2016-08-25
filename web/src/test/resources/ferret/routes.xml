@@ -1,0 +1,14 @@
+<ferret xmlns="uri:fulcrum.net:schemas:ferret">
+    <ui>
+        <ui id="locationsList"/>
+        <ui id="locations"/>
+    </ui>
+    <route path="/">
+        <controller path="/locations"
+                    id="locations"
+                    query="LOCATIONS">
+            <list/>
+            <show by="LOCATIONID"/>
+        </controller>
+    </route>
+</ferret>

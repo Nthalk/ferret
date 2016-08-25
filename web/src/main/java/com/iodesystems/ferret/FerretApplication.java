@@ -1,6 +1,7 @@
 package com.iodesystems.ferret;
 
-import com.iodesystems.ferret.file.FerretReader;
+import com.iodesystems.ferret.route.Router;
+import com.iodesystems.ferret.ui.UiResolver;
 import com.iodesystems.ferret.xsd.Ferret;
 
 import javax.servlet.ServletException;
@@ -11,33 +12,27 @@ import java.io.PrintWriter;
 
 public class FerretApplication {
 
-
-    private final FerretReader reader;
     private final Ferret ferret;
     private final Exception error;
-
-    public FerretApplication(Exception error) {
-        this(null, null, error);
-    }
+    private final Router router;
+    private final UiResolver uiResolver;
 
     public FerretApplication() {
-        this(null, null, null);
+        this(null, null);
     }
 
-    public FerretApplication(FerretReader reader, Ferret ferret) {
-        this(reader, ferret, null);
-    }
-
-    public FerretApplication(FerretReader reader, Ferret ferret, Exception error) {
-        this.reader = reader;
-        this.ferret = ferret;
+    public FerretApplication(Ferret ferret, Exception error) {
         this.error = error;
+        this.ferret = ferret;
+        this.uiResolver = new UiResolver(ferret.getUi());
+        this.router = new Router(uiResolver, ferret.getRoute());
+
     }
 
     public void service(HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException {
         if (error == null) {
             req.setAttribute("ferret", ferret);
-            req.getRequestDispatcher("ferret.jsp").forward(req, rsp);
+            router.route(req, rsp);
         } else {
             rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter writer = rsp.getWriter();

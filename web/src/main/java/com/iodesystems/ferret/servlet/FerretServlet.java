@@ -23,12 +23,12 @@ public class FerretServlet extends GenericServlet {
 
             @Override
             public void onError(Exception e) {
-                ferretApplication = new FerretApplication(e);
+                ferretApplication = new FerretApplication(null, e);
             }
 
             @Override
             public void onFerret(Ferret ferret) {
-                ferretApplication = new FerretApplication(ferretReader, ferret);
+                ferretApplication = new FerretApplication(ferret, null);
             }
         }.start();
     }

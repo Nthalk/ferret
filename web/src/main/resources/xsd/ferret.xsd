@@ -141,8 +141,8 @@
     <xs:complexType name="UserInterfaces">
         <xs:sequence>
             <xs:element name="ui" type="UserInterface" maxOccurs="unbounded"/>
-            <xs:element name="messages" type="Messages"/>
-            <xs:element name="templates" type="Templates"/>
+            <xs:element name="messages" type="Messages" maxOccurs="1" minOccurs="0"/>
+            <xs:element name="templates" type="Templates" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -218,7 +218,7 @@
 
     <xs:complexType name="Messages">
         <xs:sequence>
-            <xs:element name="message" type="Message"/>
+            <xs:element name="message" type="Message" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="Message">
@@ -322,7 +322,7 @@
 
     <xs:complexType name="VirtualDataType">
         <xs:sequence>
-            <xs:element name="field" type="VirtualField" minOccurs="1"/>
+            <xs:element name="field" type="VirtualField" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
     </xs:complexType>
@@ -427,7 +427,7 @@
                 <xs:sequence>
                     <xs:element name="controller" type="RouteController" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="path" type="xs:string"/>
+                <xs:attribute name="path" type="xs:string" use="required"/>
                 <xs:attribute name="title" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
@@ -437,14 +437,12 @@
         <xs:complexContent>
             <xs:extension base="Route">
                 <xs:sequence>
-                    <xs:element name="index" type="RouteIndex" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="list" type="RouteList" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="show" type="RouteShow" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="create" type="RouteCreate" minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="update" type="RouteUpdate" minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="delete" type="RouteDelete" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
                 <xs:attribute name="label" type="xs:string"/>
-                <xs:attribute name="query" type="xs:string"/>
+                <xs:attribute name="query" type="xs:string" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -452,7 +450,7 @@
         <xs:attribute name="ui" type="xs:string"/>
         <xs:attribute name="id" type="xs:string"/>
     </xs:complexType>
-    <xs:complexType name="RouteIndex">
+    <xs:complexType name="RouteList">
         <xs:complexContent>
             <xs:extension base="RouteAction">
             </xs:extension>
@@ -461,6 +459,11 @@
     <xs:complexType name="RouteShow">
         <xs:complexContent>
             <xs:extension base="RouteAction">
+                <xs:sequence>
+                    <xs:element name="controller" type="RouteController" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="update" type="RouteUpdate" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="delete" type="RouteDelete" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
                 <xs:attribute name="by" type="xs:string" use="required"/>
             </xs:extension>
         </xs:complexContent>

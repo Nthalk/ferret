@@ -6,6 +6,5 @@
 </head>
 <body>
 Ferret!
-${ferret.data.jdbc.driver}
 </body>
 </html>

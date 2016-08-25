@@ -185,13 +185,10 @@
     <route id="Home"
            path="/"
            ui="home">
-        <controller path="/carl/:arg">
-            <index ui="carl"/>
-        </controller>
         <controller label="Locations"
                     path="/locations"
                     query="LOCATION">
-            <index/>
+            <list/>
             <show by="ID"/>
             <create/>
             <update/>
@@ -200,10 +197,12 @@
         <controller label="Assets"
                     path="/assets"
                     query="assets">
-            <index/>
+            <list/>
             <show by="ID"/>
             <create/>
             <update/>
         </controller>
     </route>
+
+
 </ferret>

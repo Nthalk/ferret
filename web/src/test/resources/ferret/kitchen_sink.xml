@@ -10,10 +10,10 @@
 <ferret xmlns="uri:fulcrum.net:schemas:ferret">
 
     <!-- These should be able to be externalizable -->
-    <import resource="types.xml"/>
-    <import resource="data.xml"/>
-    <import resource="ui.xml"/>
-    <import resource="routes.xml"/>
+    <!--<import resource="types.xml"/>-->
+    <!--<import resource="data.xml"/>-->
+    <!--<import resource="ui.xml"/>-->
+    <!--<import resource="routes.xml"/>-->
 
     <!-- Types define underlying data types and query behavior -->
     <types>
@@ -107,12 +107,10 @@
 
     </data>
 
-    <!-- Ui defines how things look -->
     <ui>
         <messages>
             <message code="LOCATION.NAME" value="Name"/>
         </messages>
-
         <templates>
             <template id="editForm">
                 <form>
@@ -149,6 +147,18 @@
                 </layout>
             </form>
         </ui>
+
+        <ui id="locationsCreate">
+            <dataForm query="LOCATIONS"/>
+        </ui>
+
+        <ui id="locationsUpdate">
+            <dataForm query="LOCATIONS"/>
+        </ui>
+
+        <ui id="carl">
+
+        </ui>
     </ui>
 
     <security policy="denyAll">
@@ -160,13 +170,14 @@
             </static>
         </authentication>
         <roles>
+            <anonymous/>
             <role name="ADMIN">
-                <query name="/**" allow="modify"/>
-                <route path="/**" allow="modify"/>
+                <query name="/**"/>
+                <route path="/**"/>
             </role>
             <role name="TECH">
                 <query name="/**" allow="read"/>
-                <route path="/**" allow="read"/>
+                <route path="/**"/>
             </role>
         </roles>
     </security>
@@ -174,10 +185,6 @@
     <route id="Home"
            path="/"
            ui="home">
-        <controller path="/carl/:arg">
-            <index ui="carl"/>
-        </controller>
-
         <controller label="Locations"
                     path="/locations"
                     query="LOCATION">
@@ -187,6 +194,13 @@
             <update/>
             <delete/>
         </controller>
-
+        <controller label="Assets"
+                    path="/assets"
+                    query="assets">
+            <index/>
+            <show by="ID"/>
+            <create/>
+            <update/>
+        </controller>
     </route>
 </ferret>
