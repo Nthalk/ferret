@@ -8,7 +8,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
 
 public class FerretReader {
 
@@ -48,19 +47,19 @@ public class FerretReader {
 
     }
 
-    private void extendRoute(List<Route> merge, List<Route> into) {
+    private void extendRoute(Ferret.Route merge, Ferret.Route into) {
 
     }
 
-    private void extendTypes(DataTypes merge, DataTypes into) {
+    private void extendTypes(Types merge, Types into) {
 
     }
 
-    private void extendUi(UserInterfaces merge, UserInterfaces into) {
+    private void extendUi(Ferret.Ui merge, Ferret.Ui into) {
 
     }
 
-    private void extendData(DataConnection merge, DataConnection into) {
+    private void extendData(Data merge, Data into) {
 
     }
 

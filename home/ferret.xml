@@ -10,10 +10,10 @@
 <ferret xmlns="uri:fulcrum.net:schemas:ferret">
 
     <!-- These should be able to be externalizable -->
-    <!--<import resource="types.xml"/>-->
-    <!--<import resource="data.xml"/>-->
-    <!--<import resource="ui.xml"/>-->
-    <!--<import resource="routes.xml"/>-->
+    <import resource="types.xml"/>
+    <import resource="data.xml"/>
+    <import resource="ui.xml"/>
+    <import resource="../routes.xml"/>
 
     <!-- Types define underlying data types and query behavior -->
     <types>
@@ -24,13 +24,12 @@
 
         <typeExtension id="indexedString"
                        extends="String"
-                       search="STARTS_WITH"/>
+                       search="startsWith"/>
         <typeExtension id="code"
                        extends="indexedString"/>
         <typeExtension id="description"
                        extends="String"/>
         <typeExtension id="id"
-                       primary-key="true"
                        extends="number"/>
         <typeExtension id="currency"
                        extends="number"/>
@@ -38,7 +37,7 @@
         <referenceType id="location"
                        query="LOCATION"
                        by="ID"
-                       show="NAME"/>
+                       ui="NAME"/>
 
         <virtualType id="gps">
             <field name="LATITUDE" type="number"/>
@@ -56,15 +55,14 @@
     </types>
 
     <!-- Data defines how to connect to databases, what queries there are, and metadata about their results -->
-    <data name="ferret">
-
+    <data>
         <jdbc
             username="ferret"
             password="ferret"
             driver="org.postgresql.Driver"
-            jdbcUrl="jdbc:postgresql://localhost:5432/ferret"/>
+            url="jdbc:postgresql://localhost:5432/ferret"/>
 
-        <table id="assets" name="ASSET">
+        <table id="ASSET">
             <field name="ID"
                    type="id"/>
             <field name="CODE"
@@ -75,7 +73,7 @@
                    type="location"/>
         </table>
 
-        <table name="LOCATION">
+        <table id="LOCATION">
             <field name="ID"
                    type="Number"/>
             <field name="NAME"
@@ -84,16 +82,12 @@
                    type="address"/>
         </table>
 
-        <table name="LOCATION_TYPE">
+        <table id="LOCATION_TYPE">
             <field name="ID"
                    type="Number"/>
             <field name="NAME"
                    type="string"/>
         </table>
-
-        <view id="LOCATIONS_WITH_LOCATION_TYPE" query="LOCATION" as="L">
-            <join query="LOCATION_TYPE" as="T" on="L.LOCATIONTYPEID= T.ID"/>
-        </view>
 
         <options id="LOCATION_NAME_OPTIONS"
                  query="LOCATION"
@@ -109,43 +103,15 @@
 
     <ui>
         <messages>
-            <message code="LOCATION.NAME" value="Name"/>
+            <message id="LOCATION.NAME" value="Name"/>
         </messages>
-        <templates>
-            <template id="editForm">
-                <form>
-
-                </form>
-            </template>
-        </templates>
 
         <ui id="home">
             <out/>
         </ui>
 
         <ui id="locations">
-            <form>
-                <layout>
-                    <row>
-                        <col>
-                            <select name="LOCATIONID" query="LOCATION_NAME_OPTIONS"/>
-                        </col>
-                        <col>
-                            <select name="LOCATIONTYPEID" query="LOCATION_TYPE_OPTIONS"/>
-                        </col>
-                    </row>
-                    <row if=":LOCATIONID != null">
-                        <dataGrid query="LOCATION_TYPE">
-                            <bind name=":LOCATIONID"/>
-                            <row>
-                                <col/>
-                                <col/>
-                            </row>
-                        </dataGrid>
-                        <dataTable query="LOCATION"/>
-                    </row>
-                </layout>
-            </form>
+
         </ui>
 
         <ui id="locationsCreate">
@@ -161,7 +127,7 @@
         </ui>
     </ui>
 
-    <security policy="denyAll">
+    <security policy="deny">
         <authentication>
             <static>
                 <user name="admin" password="admin">
@@ -169,30 +135,29 @@
                 </user>
             </static>
         </authentication>
-        <roles>
-            <anonymous/>
-            <role name="ADMIN">
-                <query name="/**"/>
-                <route path="/**"/>
-            </role>
-            <role name="TECH">
-                <query name="/**" allow="read"/>
-                <route path="/**"/>
-            </role>
-        </roles>
+        <anonymous/>
+        <role name="ADMIN">
+            <query name="/**" policy="read"/>
+            <route path="/**" policy="read"/>
+        </role>
+        <role name="TECH">
+            <query name="/**" policy="read"/>
+            <route path="/**" policy="read"/>
+        </role>
     </security>
 
     <route id="Home"
-           path="/"
            ui="home">
+        <notFound/>
         <controller label="Locations"
                     path="/locations"
                     query="LOCATION">
             <list/>
-            <show by="ID"/>
+            <show by="ID">
+                <update/>
+                <delete/>
+            </show>
             <create/>
-            <update/>
-            <delete/>
         </controller>
         <controller label="Assets"
                     path="/assets"
@@ -200,9 +165,6 @@
             <list/>
             <show by="ID"/>
             <create/>
-            <update/>
         </controller>
     </route>
-
-
 </ferret>

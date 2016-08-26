@@ -1,6 +1,6 @@
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
            xmlns='uri:fulcrum.net:schemas:ferret'
-           targetNamespace='uri:fulcrum.net:schemas:ferret'
+           targetNamespace='uri:fulcrum.net:schemas:ferretx'
            elementFormDefault='qualified'>
 
     <!-- Data -->
@@ -28,20 +28,19 @@
         <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="DataConnection">
+    <xs:complexType name="Data">
         <xs:sequence>
-            <xs:choice>
+            <xs:choice maxOccurs="1" minOccurs="0">
                 <xs:element name="jndiLookup" type="JndiLookup"/>
                 <xs:element name="jdbc" type="JdbcConnect"/>
             </xs:choice>
-            <xs:element name="idField" type="TableField" maxOccurs="1"/>
-            <xs:element name="table" type="Table"/>
-            <xs:element name="query" type="Query"/>
-            <xs:element name="view" type="View"/>
-            <xs:element name="options" type="OptionsQuery"/>
+            <xs:element name="idField" type="TableField" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="table" type="Table" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="query" type="Query" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="view" type="View" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="options" type="OptionsQuery" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="read-only" type="xs:boolean" default="false"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="JndiLookup">
@@ -140,9 +139,9 @@
 
     <xs:complexType name="UserInterfaces">
         <xs:sequence>
-            <xs:element name="ui" type="UserInterface" maxOccurs="unbounded"/>
-            <xs:element name="messages" type="Messages" maxOccurs="1" minOccurs="0"/>
-            <xs:element name="templates" type="Templates" maxOccurs="1" minOccurs="0"/>
+            <xs:element name="messages" type="Messages" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="templates" type="Templates" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ui" type="UserInterface" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -164,8 +163,8 @@
         <xs:complexContent>
             <xs:extension base="Renderable">
                 <xs:sequence>
-                    <xs:element name="out" type="UiOutput"/>
-                    <xs:element name="form" type="Form"/>
+                    <xs:element name="out" type="UiOutput" minOccurs="0"/>
+                    <xs:element name="form" type="Form" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="id" type="xs:string" use="required"/>
             </xs:extension>
@@ -422,26 +421,22 @@
     <!-- Routes -->
 
     <xs:complexType name="Route">
-        <xs:complexContent>
-            <xs:extension base="RouteAction">
-                <xs:sequence>
-                    <xs:element name="controller" type="RouteController" minOccurs="0" maxOccurs="unbounded"/>
-                </xs:sequence>
-                <xs:attribute name="path" type="xs:string" use="required"/>
-                <xs:attribute name="title" type="xs:string"/>
-            </xs:extension>
-        </xs:complexContent>
+        <xs:sequence>
+            <xs:element name="notFound" type="NotFound" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="controller" type="RouteController" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="RouteController">
         <xs:complexContent>
-            <xs:extension base="Route">
+            <xs:extension base="RouteAction">
                 <xs:sequence>
                     <xs:element name="list" type="RouteList" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="show" type="RouteShow" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="create" type="RouteCreate" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
                 <xs:attribute name="label" type="xs:string"/>
+                <xs:attribute name="path" type="xs:string" use="required"/>
                 <xs:attribute name="query" type="xs:string" use="required"/>
             </xs:extension>
         </xs:complexContent>
@@ -492,11 +487,11 @@
     <xs:complexType name="Ferret">
         <xs:sequence>
             <xs:element name="import" type="Import" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="data" type="DataConnection" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="data" type="Data" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ui" type="UserInterfaces" minOccurs="0" maxOccurs="1"/>
             <xs:element name="types" type="DataTypes" minOccurs="0" maxOccurs="1"/>
             <xs:element name="security" type="Security" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="route" type="Route" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="route" type="Route" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -508,4 +503,9 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="NotFound">
+        <xs:complexContent>
+            <xs:extension base="RouteAction"/>
+        </xs:complexContent>
+    </xs:complexType>
 </xs:schema>

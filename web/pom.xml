@@ -47,6 +47,29 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>us.bryon</groupId>
+                <artifactId>relaxng-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>trang-convert</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>trang</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <translations>
+                        <translation>
+                            <in>${project.basedir}/src/main/resources/rng/ferret.rng</in>
+                            <out>${project.basedir}/gen/resources/xsd/ferret.xsd</out>
+                        </translation>
+                    </translations>
+                </configuration>
+            </plugin>
+
             <!-- Generate java from xsds -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -62,7 +85,7 @@
                         <configuration>
                             <generateDirectory>${project.basedir}/gen/xsd</generateDirectory>
                             <generatePackage>com.iodesystems.ferret.xsd</generatePackage>
-                            <schemaDirectory>${project.basedir}/src/main/resources/xsd</schemaDirectory>
+                            <schemaDirectory>${project.basedir}/gen/resources/xsd</schemaDirectory>
                             <removeOldOutput>true</removeOldOutput>
                         </configuration>
                     </execution>
@@ -152,7 +175,7 @@
         <dependency>
             <groupId>com.iodesystems</groupId>
             <artifactId>fn</artifactId>
-            <version>1.1.9-SNAPSHOT</version>
+            <version>1.1.10-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

@@ -30,7 +30,11 @@ public class RouteTree {
                     current = Fn.getOrAdd(current.getChildren(), pathSegment, () -> {
                         RouteTree routeTree = new RouteTree();
                         if (pathSegment.startsWith(":")) {
-                            finalCurrent.setCapture(routeTree);
+                            if (!hasCapture()) {
+                                finalCurrent.setCapture(routeTree);
+                            } else {
+                                throw new RuntimeException("Duplicate capture");
+                            }
                         }
                         return routeTree;
                     });
@@ -58,5 +62,12 @@ public class RouteTree {
 
     public boolean hasCapture() {
         return capture != null;
+    }
+
+    public Option<RouteTree> get(String part) {
+        for (RouteTree routeTree : Fn.get(getChildren(), part)) {
+            return Option.of(routeTree);
+        }
+        return Option.of(getCapture());
     }
 }

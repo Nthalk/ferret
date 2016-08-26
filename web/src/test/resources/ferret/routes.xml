@@ -1,14 +1,25 @@
 <ferret xmlns="uri:fulcrum.net:schemas:ferret">
+
+
+    <data>
+        <jndiLookup name="data"/>
+        <jdbc driver="asdf" jdbcUrl="asdf"/>
+    </data>
+
     <ui>
-        <ui id="locationsList"/>
-        <ui id="locations"/>
+        <ui id="1"/>
     </ui>
-    <route path="/">
+
+    <route>
+        <notFound/>
         <controller path="/locations"
                     id="locations"
+                    ui="locations"
                     query="LOCATIONS">
+            <show by="LOCATIONID">
+
+            </show>
             <list/>
-            <show by="LOCATIONID"/>
         </controller>
     </route>
 </ferret>

@@ -1,0 +1,20 @@
+<!--
+    The Ferret descriptor is a document that contains
+
+        type:       how to work with data
+        data:       what data is available and how to access it
+        ui:         how to render things
+        route:      how to organize an ui's with data
+        security:   how to identify users and manage their access of data and routes
+-->
+<ferret xmlns="uri:fulcrum.net:schemas:ferret">
+    <types>
+        <referenceType id="asdf" query="efefe" by="asdf" ui="asdf"/>
+        <typeExtension id="asdf" extends="afefe" search="contains"/>
+        <type id="asdf" type="Number"/>
+        <type id="asdf" type="Number"/>
+        <type id="asdf" type="Number"/>
+        <type id="asdf" type="Number"/>
+    </types>
+
+</ferret>

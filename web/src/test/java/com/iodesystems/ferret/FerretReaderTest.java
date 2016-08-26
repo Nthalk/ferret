@@ -1,7 +1,9 @@
 package com.iodesystems.ferret;
 
 import com.iodesystems.ferret.file.FerretReader;
+import com.iodesystems.ferret.route.RouteTree;
 import com.iodesystems.ferret.route.Routeable;
+import com.iodesystems.ferret.route.Router;
 import com.iodesystems.ferret.ui.UiResolver;
 import com.iodesystems.ferret.xsd.Ferret;
 import com.iodesystems.fn.Fn;
@@ -28,9 +30,12 @@ public class FerretReaderTest {
     public void testRoutes() throws Exception {
         FerretReader reader = new FerretReader();
         Ferret ferret = reader.read(getClass().getClassLoader().getResource("ferret/routes.xml").openStream());
+        Routeable routeable = Fn.of(ferret.getRoute()).convert(Routeable::new).first().get();
         UiResolver uiResolver = new UiResolver(ferret.getUi());
-        Fn<Routeable> routeables = Fn.of(ferret.getRoute()).convert(action -> new Routeable(uiResolver, action));
-        System.out.println(routeables.first().get().toString());
-
+        Router router = new Router(ferret.getRoute());
+        String path = "/locations/1";
+        RouteTree route = router.route("GET", path);
     }
+
+
 }

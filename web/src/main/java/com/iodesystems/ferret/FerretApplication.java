@@ -25,14 +25,13 @@ public class FerretApplication {
         this.error = error;
         this.ferret = ferret;
         this.uiResolver = new UiResolver(ferret.getUi());
-        this.router = new Router(uiResolver, ferret.getRoute());
+        this.router = new Router(ferret.getRoute());
 
     }
 
     public void service(HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException {
         if (error == null) {
             req.setAttribute("ferret", ferret);
-            router.route(req, rsp);
         } else {
             rsp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter writer = rsp.getWriter();

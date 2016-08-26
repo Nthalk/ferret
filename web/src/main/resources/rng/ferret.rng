@@ -1,0 +1,337 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+         ns="uri:fulcrum.net:schemas:ferret">
+    <start>
+        <ref name="ferret"/>
+    </start>
+    <define name="ferret">
+        <element name="ferret">
+            <zeroOrMore>
+                <element name="import">
+                    <attribute name="resource">
+                        <data type="anyURI"/>
+                    </attribute>
+                </element>
+            </zeroOrMore>
+            <optional>
+                <element name="types">
+                    <zeroOrMore>
+                        <element name="type">
+                            <ref name="hasId"/>
+                            <attribute name="type">
+                                <choice>
+                                    <value type="string">String</value>
+                                    <value type="string">Number</value>
+                                    <value type="string">Date</value>
+                                    <value type="string">Boolean</value>
+                                    <value type="string">Char</value>
+                                </choice>
+                            </attribute>
+                        </element>
+                        <element name="typeExtension">
+                            <ref name="hasId"/>
+                            <attribute name="extends">
+                                <text/>
+                            </attribute>
+                            <optional>
+                                <attribute name="primaryKey">
+                                    <data type="boolean"/>
+                                </attribute>
+                            </optional>
+                            <optional>
+                                <attribute name="search">
+                                    <choice>
+                                        <value type="string">startsWith</value>
+                                        <value type="string">exact</value>
+                                        <value type="string">contains</value>
+                                    </choice>
+                                </attribute>
+                            </optional>
+                        </element>
+                        <element name="referenceType">
+                            <ref name="hasId"/>
+                            <attribute name="query">
+                                <text/>
+                            </attribute>
+                            <attribute name="by">
+                                <text/>
+                            </attribute>
+                            <attribute name="ui">
+                                <text/>
+                            </attribute>
+                        </element>
+                        <element name="virtualType">
+                            <ref name="hasId"/>
+                            <oneOrMore>
+                                <element name="field">
+                                    <attribute name="name">
+                                        <text/>
+                                    </attribute>
+                                    <attribute name="type">
+                                        <text/>
+                                    </attribute>
+                                </element>
+                            </oneOrMore>
+                        </element>
+                    </zeroOrMore>
+                </element>
+            </optional>
+            <optional>
+                <element name="data">
+                    <choice>
+                        <element name="jdbc">
+                            <attribute name="username">
+                                <text/>
+                            </attribute>
+                            <attribute name="password">
+                                <text/>
+                            </attribute>
+                            <attribute name="driver">
+                                <text/>
+                            </attribute>
+                            <attribute name="url">
+                                <text/>
+                            </attribute>
+                        </element>
+                        <element name="jndi">
+                            <attribute name="name">
+                                <text/>
+                            </attribute>
+                        </element>
+                    </choice>
+                    <zeroOrMore>
+                        <element name="table">
+                            <ref name="hasId"/>
+
+                            <zeroOrMore>
+                                <element name="field">
+                                    <attribute name="name">
+                                        <text/>
+                                    </attribute>
+                                    <attribute name="type">
+                                        <text/>
+                                    </attribute>
+                                </element>
+                            </zeroOrMore>
+                        </element>
+                        <element name="options">
+                            <ref name="hasId"/>
+                            <attribute name="query">
+                                <text/>
+                            </attribute>
+                            <attribute name="label">
+                                <text/>
+                            </attribute>
+                            <attribute name="value">
+                                <text/>
+                            </attribute>
+                        </element>
+                    </zeroOrMore>
+                </element>
+            </optional>
+
+            <optional>
+                <element name="ui">
+                    <optional>
+                        <element name="messages">
+                            <oneOrMore>
+                                <element name="message">
+                                    <ref name="hasId"/>
+                                    <attribute name="value">
+                                        <text/>
+                                    </attribute>
+                                </element>
+                            </oneOrMore>
+                        </element>
+                    </optional>
+                    <zeroOrMore>
+                        <element name="ui">
+                            <ref name="Ui"/>
+                        </element>
+                    </zeroOrMore>
+                </element>
+            </optional>
+            <optional>
+                <element name="route">
+                    <ref name="hasId"/>
+                    <ref name="hasUi"/>
+                    <optional>
+                        <element name="notFound"><empty/></element>
+                    </optional>
+                    <oneOrMore>
+                        <element name="controller">
+                            <ref name="Controller"/>
+                        </element>
+                    </oneOrMore>
+                </element>
+            </optional>
+            <optional>
+                <element name="security">
+                    <attribute name="policy">
+                        <choice>
+                            <value type="string">deny</value>
+                            <value type="string">read</value>
+                            <value type="string">modify</value>
+                        </choice>
+                    </attribute>
+                    <choice>
+                        <element name="authentication">
+                            <choice>
+                                <element name="static">
+                                    <oneOrMore>
+                                        <element name="user">
+                                            <attribute name="name">
+                                                <text/>
+                                            </attribute>
+                                            <attribute name="password">
+                                                <text/>
+                                            </attribute>
+                                            <oneOrMore>
+                                                <element name="role">
+                                                    <attribute name="name">
+                                                        <data type="NCName"/>
+                                                    </attribute>
+                                                </element>
+                                            </oneOrMore>
+                                        </element>
+                                    </oneOrMore>
+                                </element>
+                            </choice>
+                        </element>
+                        <element name="anonymous">
+                            <ref name="Role"/>
+                        </element>
+                        <zeroOrMore>
+                            <element name="role">
+                                <ref name="Role"/>
+                                <attribute name="name">
+                                    <data type="NCName"/>
+                                </attribute>
+                            </element>
+                        </zeroOrMore>
+                    </choice>
+                </element>
+            </optional>
+        </element>
+    </define>
+
+    <!-- Components -->
+    <define name="hasId">
+        <attribute name="id">
+            <data type="NCName"/>
+        </attribute>
+    </define>
+
+    <define name="hasUi">
+        <attribute name="ui">
+            <data type="NCName"/>
+        </attribute>
+    </define>
+
+    <define name="Role">
+        <zeroOrMore>
+            <element name="query">
+                <attribute name="name">
+                    <data type="string"/>
+                </attribute>
+                <attribute name="policy">
+                    <choice>
+                        <value type="string">deny</value>
+                        <value type="string">read</value>
+                        <value type="string">modify</value>
+                    </choice>
+                </attribute>
+            </element>
+            <element name="route">
+                <attribute name="path">
+                    <data type="string"/>
+                </attribute>
+                <attribute name="policy">
+                    <choice>
+                        <value type="string">deny</value>
+                        <value type="string">read</value>
+                        <value type="string">modify</value>
+                    </choice>
+                </attribute>
+            </element>
+        </zeroOrMore>
+    </define>
+
+    <!-- User Interface -->
+    <define name="Ui">
+        <ref name="UiRenderable"/>
+    </define>
+
+    <define name="UiRenderable">
+        <ref name="hasId"/>
+        <zeroOrMore>
+            <element name="dataForm">
+                <attribute name="query">
+                    <text/>
+                </attribute>
+            </element>
+        </zeroOrMore>
+        <optional>
+            <element name="out">
+                <empty/>
+            </element>
+        </optional>
+    </define>
+
+    <!-- Routes -->
+    <define name="Route">
+        <optional>
+            <ref name="hasUi"/>
+        </optional>
+        <optional>
+            <ref name="hasId"/>
+        </optional>
+    </define>
+    <define name="Controller">
+        <optional>
+            <ref name="hasUi"/>
+        </optional>
+        <attribute name="label">
+            <text/>
+        </attribute>
+        <attribute name="path">
+            <text/>
+        </attribute>
+        <attribute name="query">
+            <data type="NCName"/>
+        </attribute>
+        <optional>
+            <element name="list">
+                <ref name="Route"/>
+            </element>
+        </optional>
+        <optional>
+            <element name="create">
+                <ref name="Route"/>
+            </element>
+        </optional>
+        <optional>
+            <element name="show">
+                <ref name="Route"/>
+                <optional>
+                    <attribute name="by">
+                        <data type="NCName"/>
+                    </attribute>
+                </optional>
+                <zeroOrMore>
+                    <element name="controller">
+                        <ref name="Controller"/>
+                    </element>
+                </zeroOrMore>
+                <optional>
+                    <element name="update">
+                        <ref name="Route"/>
+                    </element>
+                    <element name="delete">
+                        <ref name="Route"/>
+                    </element>
+                </optional>
+            </element>
+        </optional>
+    </define>
+</grammar>
