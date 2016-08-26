@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-mvn -pl web generate-resources generata-sources
+mvn -pl web generate-resources generate-sources
 
