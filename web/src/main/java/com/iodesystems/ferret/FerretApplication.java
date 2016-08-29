@@ -25,8 +25,7 @@ public class FerretApplication {
         this.error = error;
         this.ferret = ferret;
         this.uiResolver = new UiResolver(ferret.getUi());
-        this.router = new Router(ferret.getRoute());
-
+        this.router = new Router();
     }
 
     public void service(HttpServletRequest req, HttpServletResponse rsp) throws IOException, ServletException {

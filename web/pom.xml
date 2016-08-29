@@ -46,50 +46,32 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-                <groupId>us.bryon</groupId>
-                <artifactId>relaxng-maven-plugin</artifactId>
-                <version>1.1</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>trang-convert</id>
-                        <phase>generate-sources</phase>
+                        <id>schemagen</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>trang</goal>
+                            <goal>schemagen</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <translations>
-                        <translation>
-                            <in>${project.basedir}/src/main/resources/rng/ferret.rng</in>
-                            <out>${project.basedir}/gen/resources/xsd/ferret.xsd</out>
-                        </translation>
-                    </translations>
+                    <sources>
+                        <source>src/main/java/com/iodesystems/ferret/xsd</source>
+                    </sources>
+                    <transformSchemas>
+                        <transformSchema>
+                            <uri>http://ferret.fulcrum.net/</uri>
+                            <toPrefix>fer</toPrefix>
+                            <toFile>ferret.xsd</toFile>
+                        </transformSchema>
+                    </transformSchemas>
+                    <verbose>true</verbose>
+                    <outputDirectory>${project.basedir}/gen/xsd</outputDirectory>
                 </configuration>
-            </plugin>
-
-            <!-- Generate java from xsds -->
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.13.1</version>
-                <executions>
-                    <execution>
-                        <id>xjc-scores</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <generateDirectory>${project.basedir}/gen/xsd</generateDirectory>
-                            <generatePackage>com.iodesystems.ferret.xsd</generatePackage>
-                            <schemaDirectory>${project.basedir}/gen/resources/xsd</schemaDirectory>
-                            <removeOldOutput>true</removeOldOutput>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

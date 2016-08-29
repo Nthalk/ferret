@@ -7,7 +7,7 @@
         route:      how to organize an ui's with data
         security:   how to identify users and manage their access of data and routes
 -->
-<ferret xmlns="uri:fulcrum.net:schemas:ferret">
+<ferret xmlns="http://ferret.fulcrum.net/">
 
     <!-- These should be able to be externalizable -->
     <import resource="types.xml"/>
@@ -18,17 +18,17 @@
     <!-- Types define underlying data types and query behavior -->
     <types>
         <type id="string"
-              type="String"/>
+              sqlType="String"/>
         <type id="number"
-              type="Number"/>
+              sqlType="Number"/>
 
         <typeExtension id="indexedString"
-                       extends="String"
+                       extends="string"
                        search="startsWith"/>
         <typeExtension id="code"
                        extends="indexedString"/>
         <typeExtension id="description"
-                       extends="String"/>
+                       extends="string"/>
         <typeExtension id="id"
                        extends="number"/>
         <typeExtension id="currency"
@@ -37,7 +37,7 @@
         <referenceType id="location"
                        query="LOCATION"
                        by="ID"
-                       ui="NAME"/>
+                       show="NAME"/>
 
         <virtualType id="gps">
             <field name="LATITUDE" type="number"/>
@@ -75,7 +75,7 @@
 
         <table id="LOCATION">
             <field name="ID"
-                   type="Number"/>
+                   type="number"/>
             <field name="NAME"
                    type="string"/>
             <field name="ADDRESS"
@@ -84,7 +84,7 @@
 
         <table id="LOCATION_TYPE">
             <field name="ID"
-                   type="Number"/>
+                   type="number"/>
             <field name="NAME"
                    type="string"/>
         </table>
@@ -106,43 +106,28 @@
             <message id="LOCATION.NAME" value="Name"/>
         </messages>
 
-        <ui id="home">
-            <out/>
-        </ui>
+        <ui id="home"/>
 
-        <ui id="locations">
+        <ui id="locations"/>
 
-        </ui>
+        <ui id="locationsCreate"/>
 
-        <ui id="locationsCreate">
-            <dataForm query="LOCATIONS"/>
-        </ui>
-
-        <ui id="locationsUpdate">
-            <dataForm query="LOCATIONS"/>
-        </ui>
-
-        <ui id="carl">
-
-        </ui>
+        <ui id="locationsUpdate"/>
     </ui>
 
-    <security policy="deny">
-        <authentication>
-            <static>
-                <user name="admin" password="admin">
-                    <role name="ADMIN"/>
-                </user>
-            </static>
-        </authentication>
-        <anonymous/>
+    <security>
+        <staticAuthentication>
+            <user name="admin" password="admin">
+                <role name="ADMIN"/>
+            </user>
+        </staticAuthentication>
         <role name="ADMIN">
-            <query name="/**" policy="read"/>
-            <route path="/**" policy="read"/>
+            <resource resource="QUERY" match="/" policy="READ"/>
+            <resource resource="QUERY" match="/" policy="READ"/>
         </role>
         <role name="TECH">
-            <query name="/**" policy="read"/>
-            <route path="/**" policy="read"/>
+            <resource resource="QUERY" match="/" policy="READ"/>
+            <resource resource="QUERY" match="/" policy="READ"/>
         </role>
     </security>
 
@@ -152,19 +137,19 @@
         <controller label="Locations"
                     path="/locations"
                     query="LOCATION">
+            <create/>
             <list/>
             <show by="ID">
                 <update/>
                 <delete/>
             </show>
-            <create/>
         </controller>
         <controller label="Assets"
                     path="/assets"
                     query="assets">
+            <create/>
             <list/>
             <show by="ID"/>
-            <create/>
         </controller>
     </route>
 </ferret>

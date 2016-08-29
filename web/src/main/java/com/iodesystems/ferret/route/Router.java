@@ -1,46 +1,66 @@
 package com.iodesystems.ferret.route;
 
-import com.iodesystems.ferret.xsd.Ferret;
+import com.google.common.base.Splitter;
 import com.iodesystems.fn.Fn;
-import com.iodesystems.fn.data.Option;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Router {
-    Map<String, RouteTree> routeTreesByMethod = new HashMap<>();
+    private static final Splitter PATH_SPLITTER = Splitter.on("/");
+    private final Map<String, RouteSegment> routeSegmentsByMethod = new HashMap<>();
+    private RouteHandler notFoundHandler = null;
 
-    public Router(Ferret.Route route) {
-        if (route == null) return;
-        for (List<Routeable> routeablePath : Fn.of(route.getController())
-            .convert(Routeable::new)
-            .breadthPaths(Routeable::getChildren)) {
-            for (Routeable lastPath : Fn.last(routeablePath)) {
-                for (String method : lastPath.getMethod()) {
-                    RouteTree routeTree = Fn.getOrAdd(routeTreesByMethod, method, RouteTree::new);
-                    routeTree.extend(routeablePath);
-                }
-            }
+    public void route(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        String path = request.getServletPath();
+        if (path.startsWith("/")) {
+            path = path.substring(1);
         }
-    }
-
-    public RouteTree route(String method, String path) {
-        for (RouteTree routeTree : Fn.get(routeTreesByMethod, method)) {
-            for (String part : Routeable.PATH_SPLITTER.split(path)) {
-                Option<RouteTree> next = routeTree.get(part);
-                if (next.isPresent()) {
-                    routeTree = next.get();
+        RouteSegment finalRouteSegment = null;
+        String method = request.getMethod();
+        for (RouteSegment routeSegment : Fn.get(routeSegmentsByMethod, method)) {
+            for (String pathSegment : PATH_SPLITTER.split(path)) {
+                if (routeSegment.isCapture()) {
+                    request.setAttribute(routeSegment.getPathSegment(), pathSegment);
+                    routeSegment = routeSegment.getChildCapture();
                 } else {
-                    routeTree = notFound();
+                    routeSegment = routeSegment.getChild(pathSegment);
+                    if (routeSegment == null) {
+                        break;
+                    }
                 }
             }
-            return routeTree;
+            finalRouteSegment = routeSegment;
         }
-        return notFound();
+        if (finalRouteSegment != null) {
+            RouteHandler handler = finalRouteSegment.getHandler();
+            handler.handle(request, response);
+        } else if (notFoundHandler != null) {
+            notFoundHandler.handle(request, response);
+        } else {
+            try {
+                response.sendError(404, "Not found");
+            } catch (IOException e) {
+                throw new ServletException(e);
+            }
+        }
+
     }
 
-    private RouteTree notFound() {
-        return null;
+    public void extend(String method, String path, RouteHandler routeHandler) {
+        RouteSegment routeSegment = Fn.getOrAdd(routeSegmentsByMethod, method, () -> new RouteSegment(""));
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        for (String pathSegment : PATH_SPLITTER.split(path)) {
+            RouteSegment nextSegment = new RouteSegment(pathSegment);
+            routeSegment.extend(nextSegment);
+            routeSegment = nextSegment;
+        }
+        routeSegment.setHandler(routeHandler);
     }
 }

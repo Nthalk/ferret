@@ -27,17 +27,17 @@ public class FerretReader {
 
     public Ferret readAndResolveImports(File file) throws JAXBException {
         Ferret ferret = read(file);
-        for (Import anImport : ferret.getImport()) {
+        for (Import anImport : ferret.getImports()) {
             File importFile = new File(anImport.getResource());
             if (!importFile.isAbsolute()) {
-                importFile = new File(file.getParentFile(), anImport.getResource());
+                importFile = new File(file.getParentFile(), anImport.getResource().toString());
             }
             Ferret ferretImport = readAndResolveImports(importFile);
 
             extendTypes(ferretImport.getTypes(), ferret.getTypes());
             extendData(ferretImport.getData(), ferret.getData());
             extendUi(ferretImport.getUi(), ferret.getUi());
-            extendRoute(ferretImport.getRoute(), ferret.getRoute());
+            extendRoute(ferretImport.getRoutes(), ferret.getRoutes());
             extendSecurity(ferretImport.getSecurity(), ferret.getSecurity());
         }
         return ferret;
@@ -47,7 +47,7 @@ public class FerretReader {
 
     }
 
-    private void extendRoute(Ferret.Route merge, Ferret.Route into) {
+    private void extendRoute(Routes merge, Routes into) {
 
     }
 
@@ -55,7 +55,7 @@ public class FerretReader {
 
     }
 
-    private void extendUi(Ferret.Ui merge, Ferret.Ui into) {
+    private void extendUi(UserInterfaces merge, UserInterfaces into) {
 
     }
 
