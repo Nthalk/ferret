@@ -4,19 +4,20 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 public class Types {
-    @XmlElement(name = "type")
+
     private List<Type> types;
-    @XmlElement(name = "typeExtension")
+
     private List<TypeExtension> typeExtensions;
-    @XmlElement(name = "referenceType")
+
     private List<ReferenceType> referenceTypes;
-    @XmlElement(name = "virtualType")
+
     private List<VirtualType> virtualTypes;
 
     public List<VirtualType> getVirtualTypes() {
         return virtualTypes;
     }
 
+    @XmlElement(name = "virtualType")
     public void setVirtualTypes(List<VirtualType> virtualTypes) {
         this.virtualTypes = virtualTypes;
     }
@@ -25,6 +26,7 @@ public class Types {
         return referenceTypes;
     }
 
+    @XmlElement(name = "referenceType")
     public void setReferenceTypes(List<ReferenceType> referenceTypes) {
         this.referenceTypes = referenceTypes;
     }
@@ -33,6 +35,7 @@ public class Types {
         return types;
     }
 
+    @XmlElement(name = "type")
     public void setTypes(List<Type> types) {
         this.types = types;
     }
@@ -41,6 +44,7 @@ public class Types {
         return typeExtensions;
     }
 
+    @XmlElement(name = "typeExtension")
     public void setTypeExtensions(List<TypeExtension> typeExtensions) {
         this.typeExtensions = typeExtensions;
     }

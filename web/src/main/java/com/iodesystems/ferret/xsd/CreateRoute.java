@@ -1,4 +1,4 @@
 package com.iodesystems.ferret.xsd;
 
-public class CreateRoute {
+public class CreateRoute extends Route {
 }

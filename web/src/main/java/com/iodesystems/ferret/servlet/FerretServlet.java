@@ -1,9 +1,9 @@
 package com.iodesystems.ferret.servlet;
 
-import com.iodesystems.ferret.FerretApplication;
-import com.iodesystems.ferret.file.FerretFileWatcher;
-import com.iodesystems.ferret.file.FerretReader;
+import com.iodesystems.ferret.file.FileWatcher;
 import com.iodesystems.ferret.xsd.Ferret;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -11,24 +11,28 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 
 public class FerretServlet extends GenericServlet {
-    FerretApplication ferretApplication = new FerretApplication();
-    FerretReader ferretReader = new FerretReader();
-
+    ApplicationContext applicationContext;
     @Override
     public void init() throws ServletException {
-        new FerretFileWatcher(ferretReader) {
-
+        new FileWatcher() {
             @Override
-            public void onError(Exception e) {
-                ferretApplication = new FerretApplication(null, e);
+            public File getFile() throws Exception {
+                return new File(System.getProperty("ferret.home") + "/ferret.xml");
             }
 
             @Override
-            public void onFerret(Ferret ferret) {
-                ferretApplication = new FerretApplication(ferret, null);
+            public void onFileChange(File file) throws Exception {
+                applicationContext = new ClassPathXmlApplicationContext("/applicationContext.xml");
+                System.out.println();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         }.start();
     }
@@ -44,7 +48,6 @@ public class FerretServlet extends GenericServlet {
 
     protected void service(HttpServletRequest req, HttpServletResponse rsp)
         throws ServletException, IOException {
-        ferretApplication.service(req, rsp);
     }
 
 }

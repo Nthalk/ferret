@@ -3,11 +3,10 @@ package com.iodesystems.ferret.xsd;
 import javax.xml.bind.annotation.XmlAttribute;
 
 public class SecurityRoleAccessResource {
-    @XmlAttribute(required = true)
+
     private String match;
-    @XmlAttribute(required = true)
     private SecurityAccessResourceType resource;
-    @XmlAttribute(required = true)
+
     private SecurityAccessPolicy policy;
 
 
@@ -15,6 +14,7 @@ public class SecurityRoleAccessResource {
         return match;
     }
 
+    @XmlAttribute(required = true)
     public void setMatch(String match) {
         this.match = match;
     }
@@ -23,6 +23,7 @@ public class SecurityRoleAccessResource {
         return resource;
     }
 
+    @XmlAttribute(required = true)
     public void setResource(SecurityAccessResourceType resource) {
         this.resource = resource;
     }
@@ -31,6 +32,7 @@ public class SecurityRoleAccessResource {
         return policy;
     }
 
+    @XmlAttribute(required = true)
     public void setPolicy(SecurityAccessPolicy policy) {
         this.policy = policy;
     }

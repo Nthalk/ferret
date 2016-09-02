@@ -5,20 +5,14 @@ import javax.xml.bind.annotation.XmlElements;
 import java.util.List;
 
 public class Security {
-
-    @XmlElements(
-        value = {
-            @XmlElement(name = "staticAuthentication", type = StaticAuthenticationProvider.class)
-        }
-    )
     private AuthenticationProvider authenticationProvider;
-    @XmlElement(name = "role")
     private List<SecurityRoleAccess> roleAccessList;
 
     public List<SecurityRoleAccess> getRoleAccessList() {
         return roleAccessList;
     }
 
+    @XmlElement(name = "role")
     public void setRoleAccessList(List<SecurityRoleAccess> roleAccessList) {
         this.roleAccessList = roleAccessList;
     }
@@ -28,6 +22,11 @@ public class Security {
         return authenticationProvider;
     }
 
+    @XmlElements(
+        value = {
+            @XmlElement(name = "staticAuthentication", type = StaticAuthenticationProvider.class)
+        }
+    )
     public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }

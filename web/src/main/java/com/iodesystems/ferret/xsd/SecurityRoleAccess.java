@@ -5,9 +5,9 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 public class SecurityRoleAccess {
-    @XmlAttribute(required = true)
+
     private String name;
-    @XmlElement(name = "resource")
+
     private List<SecurityRoleAccessResource> roleAccessResources;
 
 
@@ -15,6 +15,7 @@ public class SecurityRoleAccess {
         return roleAccessResources;
     }
 
+    @XmlElement(name = "resource")
     public void setRoleAccessResources(List<SecurityRoleAccessResource> roleAccessResources) {
         this.roleAccessResources = roleAccessResources;
     }
@@ -23,6 +24,7 @@ public class SecurityRoleAccess {
         return name;
     }
 
+    @XmlAttribute(required = true)
     public void setName(String name) {
         this.name = name;
     }

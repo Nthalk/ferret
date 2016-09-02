@@ -7,30 +7,29 @@
         route:      how to organize an ui's with data
         security:   how to identify users and manage their access of data and routes
 -->
-<ferret xmlns="uri:fulcrum.net:schemas:ferret">
+<ferret xmlns="http://ferret.fulcrum.net/">
 
     <!-- These should be able to be externalizable -->
-    <!--<import resource="types.xml"/>-->
-    <!--<import resource="data.xml"/>-->
-    <!--<import resource="ui.xml"/>-->
-    <!--<import resource="routes.xml"/>-->
+    <import resource="types.xml"/>
+    <import resource="data.xml"/>
+    <import resource="ui.xml"/>
+    <import resource="../routes.xml"/>
 
     <!-- Types define underlying data types and query behavior -->
     <types>
         <type id="string"
-              type="String"/>
+              sqlType="String"/>
         <type id="number"
-              type="Number"/>
+              sqlType="Number"/>
 
         <typeExtension id="indexedString"
-                       extends="String"
-                       search="STARTS_WITH"/>
+                       extends="string"
+                       search="startsWith"/>
         <typeExtension id="code"
                        extends="indexedString"/>
         <typeExtension id="description"
-                       extends="String"/>
+                       extends="string"/>
         <typeExtension id="id"
-                       primary-key="true"
                        extends="number"/>
         <typeExtension id="currency"
                        extends="number"/>
@@ -56,15 +55,14 @@
     </types>
 
     <!-- Data defines how to connect to databases, what queries there are, and metadata about their results -->
-    <data name="ferret">
-
+    <data>
         <jdbc
             username="ferret"
             password="ferret"
             driver="org.postgresql.Driver"
-            jdbcUrl="jdbc:postgresql://localhost:5432/ferret"/>
+            url="jdbc:postgresql://localhost:5432/ferret"/>
 
-        <table id="assets" name="ASSET">
+        <table id="ASSET">
             <field name="ID"
                    type="id"/>
             <field name="CODE"
@@ -75,25 +73,21 @@
                    type="location"/>
         </table>
 
-        <table name="LOCATION">
+        <table id="LOCATION">
             <field name="ID"
-                   type="Number"/>
+                   type="number"/>
             <field name="NAME"
                    type="string"/>
             <field name="ADDRESS"
                    type="address"/>
         </table>
 
-        <table name="LOCATION_TYPE">
+        <table id="LOCATION_TYPE">
             <field name="ID"
-                   type="Number"/>
+                   type="number"/>
             <field name="NAME"
                    type="string"/>
         </table>
-
-        <view id="LOCATIONS_WITH_LOCATION_TYPE" query="LOCATION" as="L">
-            <join query="LOCATION_TYPE" as="T" on="L.LOCATIONTYPEID= T.ID"/>
-        </view>
 
         <options id="LOCATION_NAME_OPTIONS"
                  query="LOCATION"
@@ -109,98 +103,53 @@
 
     <ui>
         <messages>
-            <message code="LOCATION.NAME" value="Name"/>
+            <message id="LOCATION.NAME" value="Name"/>
         </messages>
-        <templates>
-            <template id="editForm">
-                <form>
 
-                </form>
-            </template>
-        </templates>
+        <ui id="home"/>
 
-        <ui id="home">
-            <out/>
-        </ui>
+        <ui id="locations"/>
 
-        <ui id="locations">
-            <form>
-                <layout>
-                    <row>
-                        <col>
-                            <select name="LOCATIONID" query="LOCATION_NAME_OPTIONS"/>
-                        </col>
-                        <col>
-                            <select name="LOCATIONTYPEID" query="LOCATION_TYPE_OPTIONS"/>
-                        </col>
-                    </row>
-                    <row if=":LOCATIONID != null">
-                        <dataGrid query="LOCATION_TYPE">
-                            <bind name=":LOCATIONID"/>
-                            <row>
-                                <col/>
-                                <col/>
-                            </row>
-                        </dataGrid>
-                        <dataTable query="LOCATION"/>
-                    </row>
-                </layout>
-            </form>
-        </ui>
+        <ui id="locationsCreate"/>
 
-        <ui id="locationsCreate">
-            <dataForm query="LOCATIONS"/>
-        </ui>
-
-        <ui id="locationsUpdate">
-            <dataForm query="LOCATIONS"/>
-        </ui>
-
-        <ui id="carl">
-
-        </ui>
+        <ui id="locationsUpdate"/>
     </ui>
 
-    <security policy="denyAll">
-        <authentication>
-            <static>
-                <user name="admin" password="admin">
-                    <role name="ADMIN"/>
-                </user>
-            </static>
-        </authentication>
-        <roles>
-            <anonymous/>
-            <role name="ADMIN">
-                <query name="/**"/>
-                <route path="/**"/>
-            </role>
-            <role name="TECH">
-                <query name="/**" allow="read"/>
-                <route path="/**"/>
-            </role>
-        </roles>
+    <security>
+        <staticAuthentication>
+            <user name="admin" password="admin">
+                <role name="ADMIN"/>
+            </user>
+        </staticAuthentication>
+        <role name="ADMIN">
+            <resource resource="QUERY" match="/" policy="READ"/>
+            <resource resource="QUERY" match="/" policy="READ"/>
+        </role>
+        <role name="TECH">
+            <resource resource="QUERY" match="/" policy="READ"/>
+            <resource resource="QUERY" match="/" policy="READ"/>
+        </role>
     </security>
 
     <route id="Home"
-           path="/"
            ui="home">
+        <notFound/>
         <controller label="Locations"
                     path="/locations"
                     query="LOCATION">
-            <index/>
-            <show by="ID"/>
             <create/>
-            <update/>
-            <delete/>
+            <list/>
+            <show by="ID">
+                <update/>
+                <delete/>
+            </show>
         </controller>
         <controller label="Assets"
                     path="/assets"
                     query="assets">
-            <index/>
-            <show by="ID"/>
             <create/>
-            <update/>
+            <list/>
+            <show by="ID"/>
         </controller>
     </route>
 </ferret>

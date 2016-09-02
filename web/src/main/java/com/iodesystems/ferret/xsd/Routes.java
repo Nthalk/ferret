@@ -6,12 +6,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import java.util.List;
 
 public class Routes extends HasOptionalId {
-    @XmlAttribute(required = true)
-    @XmlSchemaType(name = "IDREF")
     private String ui;
-    @XmlElement(name = "controller")
+
     private List<RouteController> routeControllers;
-    @XmlElement
     private NotFound notFound;
 
 
@@ -19,6 +16,7 @@ public class Routes extends HasOptionalId {
         return notFound;
     }
 
+    @XmlElement
     public void setNotFound(NotFound notFound) {
         this.notFound = notFound;
     }
@@ -27,16 +25,17 @@ public class Routes extends HasOptionalId {
         return ui;
     }
 
-
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name = "IDREF")
     public void setUi(String ui) {
         this.ui = ui;
     }
-
 
     public List<RouteController> getRouteControllers() {
         return routeControllers;
     }
 
+    @XmlElement(name = "controller")
     public void setRouteControllers(List<RouteController> routeControllers) {
         this.routeControllers = routeControllers;
     }

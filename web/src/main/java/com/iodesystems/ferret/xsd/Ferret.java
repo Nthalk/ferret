@@ -10,34 +10,27 @@ import java.util.List;
 @XmlRootElement(name = "ferret")
 @XmlAccessorOrder
 public class Ferret {
-
-    @XmlElement(name = "import")
     private List<Import> imports;
-    @XmlElement
     private Types types;
-    @XmlElement(name = "data")
     private Data data;
-    @XmlElement(name = "ui")
     private UserInterfaces ui;
-    @XmlElement(name = "security")
     private Security security;
-    @XmlElement(name = "route")
     private Routes routes;
-
 
     public Routes getRoutes() {
         return routes;
     }
 
+    @XmlElement(name = "route")
     public void setRoutes(Routes routes) {
         this.routes = routes;
     }
-
 
     public Security getSecurity() {
         return security;
     }
 
+    @XmlElement(name = "security")
     public void setSecurity(Security security) {
         this.security = security;
     }
@@ -47,6 +40,7 @@ public class Ferret {
         return ui;
     }
 
+    @XmlElement(name = "ui")
     public void setUi(UserInterfaces ui) {
         this.ui = ui;
     }
@@ -56,6 +50,7 @@ public class Ferret {
         return data;
     }
 
+    @XmlElement(name = "data")
     public void setData(Data data) {
         this.data = data;
     }
@@ -65,15 +60,16 @@ public class Ferret {
         return imports;
     }
 
+    @XmlElement(name = "import")
     public void setImports(List<Import> imports) {
         this.imports = imports;
     }
-
 
     public Types getTypes() {
         return types;
     }
 
+    @XmlElement(name = "types")
     public void setTypes(Types types) {
         this.types = types;
     }

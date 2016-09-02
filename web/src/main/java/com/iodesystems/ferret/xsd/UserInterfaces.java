@@ -4,9 +4,9 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 public class UserInterfaces {
-    @XmlElement(name = "messages")
+
     private Messages messages;
-    @XmlElement(name = "ui")
+
     private List<UserInterface> userInterfaces;
 
 
@@ -14,6 +14,7 @@ public class UserInterfaces {
         return userInterfaces;
     }
 
+    @XmlElement(name = "ui")
     public void setUserInterfaces(List<UserInterface> userInterfaces) {
         this.userInterfaces = userInterfaces;
     }
@@ -22,6 +23,7 @@ public class UserInterfaces {
         return messages;
     }
 
+    @XmlElement(name = "messages")
     public void setMessages(Messages messages) {
         this.messages = messages;
     }

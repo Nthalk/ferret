@@ -4,14 +4,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 
 public class Options extends HasId {
-    @XmlAttribute(required = true)
-    @XmlSchemaType(name = "IDREF")
+
     private String query;
-    @XmlAttribute(required = true)
-    @XmlSchemaType(name = "NCName")
+
     private String label;
-    @XmlAttribute(required = true)
-    @XmlSchemaType(name = "NCName")
+
     private String value;
 
 
@@ -19,6 +16,8 @@ public class Options extends HasId {
         return query;
     }
 
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name = "IDREF")
     public void setQuery(String query) {
         this.query = query;
     }
@@ -27,6 +26,8 @@ public class Options extends HasId {
         return label;
     }
 
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name = "NCName")
     public void setLabel(String label) {
         this.label = label;
     }
@@ -35,6 +36,8 @@ public class Options extends HasId {
         return value;
     }
 
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name = "NCName")
     public void setValue(String value) {
         this.value = value;
     }

@@ -4,16 +4,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 
 public class TypeExtension extends HasId {
-    @XmlAttribute(required = true, name = "extends")
-    @XmlSchemaType(name = "IDREF")
+
     private String extensionTypeId;
-    @XmlAttribute
+
     private SearchType search;
 
     public SearchType getSearch() {
         return search;
     }
 
+    @XmlAttribute
     public void setSearch(SearchType search) {
         this.search = search;
     }
@@ -22,6 +22,8 @@ public class TypeExtension extends HasId {
         return extensionTypeId;
     }
 
+    @XmlAttribute(required = true, name = "extends")
+    @XmlSchemaType(name = "IDREF")
     public void setExtensionTypeId(String extensionTypeId) {
         this.extensionTypeId = extensionTypeId;
     }

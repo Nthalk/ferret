@@ -5,11 +5,11 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 public class StaticAuthenticationUser {
-    @XmlAttribute(required = true)
+
     private String name;
-    @XmlAttribute(required = true)
+
     private String password;
-    @XmlElement(name = "role")
+
     private List<StaticAuthenticationUserRole> roles;
 
 
@@ -17,6 +17,7 @@ public class StaticAuthenticationUser {
         return roles;
     }
 
+    @XmlElement(name = "role")
     public void setRoles(List<StaticAuthenticationUserRole> roles) {
         this.roles = roles;
     }
@@ -25,6 +26,7 @@ public class StaticAuthenticationUser {
         return name;
     }
 
+    @XmlAttribute(required = true)
     public void setName(String name) {
         this.name = name;
     }
@@ -33,6 +35,7 @@ public class StaticAuthenticationUser {
         return password;
     }
 
+    @XmlAttribute(required = true)
     public void setPassword(String password) {
         this.password = password;
     }

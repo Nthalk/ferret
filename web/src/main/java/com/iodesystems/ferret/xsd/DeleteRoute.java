@@ -1,4 +1,4 @@
 package com.iodesystems.ferret.xsd;
 
-public class DeleteRoute {
+public class DeleteRoute extends Route {
 }
